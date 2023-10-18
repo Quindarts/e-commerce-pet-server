@@ -1,8 +1,8 @@
 const cloudinary = require('cloudinary')
-const appConfig = require('../config/app')
+const CryptoJS = require('crypto-js')
+const jwt = require('jsonwebtoken')
 
 async function uploadingImageCloudinary(path, public_id) {
-
     cloudinary.config({
         cloud_name: process.env.CLOUD_IMAGE_NAME,
         api_key: process.env.CLOUD_IMAGE_API_KEY,
@@ -17,4 +17,23 @@ async function uploadingImageCloudinary(path, public_id) {
     )
     return resultUpload
 }
-module.exports = { uploadingImageCloudinary }
+//AES
+function encryptedPassword(password) {
+    return CryptoJS.AES.encrypt(
+        password,
+        process.env.PASSWORD_SECRET_KEY
+    ).toString()
+}
+
+function decryptedPassword(decryptPassword) {
+    return CryptoJS.AES.decrypt(
+        decryptPassword,
+        process.env.PASSWORD_SECRET_KEY
+    ).toString(CryptoJS.enc.Utf8)
+}
+
+module.exports = {
+    uploadingImageCloudinary,
+    encryptedPassword,
+    decryptedPassword,
+}

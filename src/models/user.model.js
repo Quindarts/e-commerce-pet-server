@@ -22,29 +22,33 @@ const userSchema = new mongoose.Schema({
         unique: true,
         trim: true,
     },
-    name: {
+    first_name: {
+        type: String,
+        index: true,
+    },
+    last_name: {
         type: String,
         index: true,
     },
     phone: {
         type: String,
-        required: true,
+        // required: true,
         unique: true,
     },
     address: ['adressSchema'],
     rewardPoints: {
-        type: number,
+        type: Number,
         default: 0,
     },
     gender: {
         type: String,
         enum: ['female', 'male'],
-        required: true,
+        // required: true,
     },
     avatar: {
         url: {
             type: String,
-            required: true,
+            // required: true,
         },
         public_id: {
             type: String,
@@ -54,6 +58,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         enum: ['admin', 'owner', 'user', 'warehouse', 'mod'],
+        default: 'user',
     },
     isActive: {
         type: Boolean,
@@ -70,6 +75,7 @@ const userSchema = new mongoose.Schema({
     },
     dateOfBirth: {
         type: mongoose.Schema.Types.Date,
-        required: true,
+        // required: true,
     },
 })
+module.exports = mongoose.model('User', userSchema)

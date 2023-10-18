@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const { appConfig } = require('./app')
 
 async function connect() {
     // try {
