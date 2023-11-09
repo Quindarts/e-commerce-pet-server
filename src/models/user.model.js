@@ -10,7 +10,6 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        unique: true,
         trim: true,
         minLength: 8,
     },
@@ -22,16 +21,12 @@ const userSchema = new mongoose.Schema({
     },
     first_name: {
         type: String,
-        index: true,
     },
     last_name: {
         type: String,
-        index: true,
     },
     phone: {
         type: String,
-        // required: true,
-        unique: true,
     },
     address: ['adressSchema'],
     rewardPoints: {
@@ -41,12 +36,10 @@ const userSchema = new mongoose.Schema({
     gender: {
         type: String,
         enum: ['female', 'male'],
-        // required: true,
     },
     avatar: {
         url: {
             type: String,
-            // required: true,
         },
         public_id: {
             type: String,
@@ -65,15 +58,12 @@ const userSchema = new mongoose.Schema({
     },
     idFacebook: {
         type: String,
-        unique: true,
     },
     idGoogle: {
         type: String,
-        unique: true,
     },
     dateOfBirth: {
         type: mongoose.Schema.Types.Date,
-        // required: true,
     },
 })
 module.exports = mongoose.model('User', userSchema)
