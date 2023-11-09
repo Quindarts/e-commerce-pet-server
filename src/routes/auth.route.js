@@ -1,15 +1,42 @@
 const express = require('express')
 const { ROUTE } = require('../utils/Routes')
-const { login, register } = require('../controllers/auth.controller')
+const {
+    login,
+    register,
+    generateAccessToken,
+} = require('../controllers/auth.controller')
+const {
+    isValidUserNameLength,
+    isValidEmail,
+    isValidPasswordLength,
+    isMatchPasswordRegex,
+} = require('../middlewares/authValidations')
+const { validate } = require('../middlewares/validation')
 const router = express.Router()
 
 //[ROUTE LOGIN ]
-router.post(ROUTE.LOGIN, login)
+router.post(
+    ROUTE.LOGIN,
+    isValidUserNameLength,
+    isValidPasswordLength,
+    isMatchPasswordRegex,
+    validate,
+    login
+)
 
 //[ROUTE REGISTER]
-router.post(ROUTE.REGISTER, register)
-console.log("🚀 ~ file: auth.route.js:11 ~ router:", router)
 
+router.post(
+    ROUTE.REGISTER,
+    isValidUserNameLength,
+    isValidEmail,
+    isValidPasswordLength,
+    isMatchPasswordRegex,
+    validate,
+    register
+)
+//[ROUTE GENERATE NEW ACCESSTOKEN]
+router.post(ROUTE.GENERATE_ACCESSTOKEN, generateAccessToken)
 
 module.exports = router
 

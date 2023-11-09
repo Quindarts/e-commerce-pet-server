@@ -1,23 +1,29 @@
 const jwt = require('jsonwebtoken')
-function generateToken(id, tokenLife) {
-    const userData = {
-        id: id,
-    }
-    return jwt.sign({ data: userData }, process.env.TOKEN_SECRET_KEY, {
+
+function generateToken(type = 'access', payload, tokenLife) {
+    const key = type
+        ? process.env.TOKEN_SECRET_KEY
+        : process.env.REFRESH_TOKEN_SECRET_KEY
+    return jwt.sign({ data: payload }, key, {
         expiresIn: tokenLife,
     })
 }
-function verifyToken(token) {
-    return jwt.verify(token, process.env.TOKEN_SECRET_KEY, (error, decoded) => {
-        if (error) {
-            return reject(error)
-        }
-        resolve(decoded)
-    })
+function verifyToken(type = 'access', token) {
+    const key = type
+        ? process.env.TOKEN_SECRET_KEY
+        : process.env.REFRESH_TOKEN_SECRET_KEY
+    return jwt.verify(token, key)
 }
-
+function signatureToken(token) {
+    return token.split('.')[2]
+}
 function randomTokenString() {
     return Crypto.randomBytes(40).toString('hex')
 }
 
-module.exports = { verifyToken, generateToken, randomTokenString }
+module.exports = {
+    verifyToken,
+    generateToken,
+    randomTokenString,
+    signatureToken,
+}

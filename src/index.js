@@ -6,14 +6,16 @@ const mongoDB = require('./config/mongo')
 const { appConfig } = require('./config/app')
 const cors = require('cors')
 const route = require('./routes')
+const helper = require('./helper/index')
 
+app.use(express.json())
 mongoDB.connect()
+
 const corsOptions = {
-    origin: '*',
+    origin: ['http://localhost:3000'],
     optionsSuccessStatus: 200,
 }
 
-app.use(express.json())
 app.use(helmet())
 app.use(cors(corsOptions))
 

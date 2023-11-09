@@ -1,6 +1,5 @@
 const cloudinary = require('cloudinary')
 const CryptoJS = require('crypto-js')
-const jwt = require('jsonwebtoken')
 
 async function uploadingImageCloudinary(path, public_id) {
     cloudinary.config({
