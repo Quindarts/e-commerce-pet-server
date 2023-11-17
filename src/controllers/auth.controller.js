@@ -82,11 +82,15 @@ const register = async (req, res) => {
         userName: userName,
     }).lean()
 
+    //Check isEmpty user
     if (oldUser) {
-        return res
-            .status(HTTP_STATUS.NOT_FOUND)
-            .json({ message: 'User Already Exist. Please Login' })
+        return res.status(HTTP_STATUS.NOT_FOUND).json({
+            success: false,
+            status: HTTP_STATUS.NOT_FOUND,
+            message: 'User Already Exist. Please Login',
+        })
     }
+
     const encryptedPassword = helper.encryptedPassword(password)
 
     const newUser = await User.create({
@@ -113,10 +117,13 @@ const register = async (req, res) => {
         value: signatureRefreshToken,
     }).lean()
 
+    //Check oldRefreshToken
     if (oldRefreshToken) {
-        return res
-            .status(HTTP_STATUS.NOT_FOUND)
-            .json({ message: 'Token Already Exist.Try again' })
+        return res.status(HTTP_STATUS.NOT_FOUND).json({
+            success: false,
+            status: HTTP_STATUS.NOT_FOUND,
+            message: 'Token Already Exist.Try again',
+        })
     }
 
     const newRefreshToken = await RefreshToken.create({
@@ -154,12 +161,14 @@ const generateAccessToken = async (req, res) => {
 
     if (!refreshTokenFormClient) {
         return res.status(HTTP_STATUS.FORBIDDEN).json({
+            success: false,
             status: HTTP_STATUS.FORBIDDEN,
             message: 'No RefreshToken provied',
         })
     }
     if (!refreshModel) {
         return res.status(HTTP_STATUS.NOT_FOUND).json({
+            success: false,
             status: HTTP_STATUS.FORBIDDEN,
             message: 'RefreshToken is not valid',
         })
@@ -177,8 +186,8 @@ const generateAccessToken = async (req, res) => {
     )
 
     res.status(HTTP_STATUS.CREATED).json({
-        status: HTTP_STATUS.CREATED,
         success: true,
+        status: HTTP_STATUS.CREATED,
         message: 'Created AccessToken success',
         accessToken: accessToken,
     })
