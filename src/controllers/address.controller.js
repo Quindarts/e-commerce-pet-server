@@ -4,26 +4,87 @@ const { HTTP_STATUS } = require('../utils/constant')
 //[GET ALL ADDRESS]
 
 const getAllAddress = async (req, res) => {
-    const listAddress = Address.find().lean();
-
-    if (!listAddress) {
-        return res.status(HTTP_STATUS.NOT_FOUND).json({
+    try {
+        const listAddress = await Address.find().lean()
+        if (!listAddress) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                status: HTTP_STATUS.NOT_FOUND,
+                message: 'List Address not found.',
+            })
+        }
+        res.status(HTTP_STATUS.OK).json({
+            success: true,
+            status: HTTP_STATUS.CREATED,
+            message: 'Get list address success.',
+            listAddress,
+        })
+    } catch (error) {
+        console.log(
+            '🚀 ~ file: address.controller.js:17 ~ getAllAddress ~ error:',
+            error
+        )
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
-            status: HTTP_STATUS.NOT_FOUND,
-            message: 'Address not found.',
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to get list address.',
         })
     }
-    
 }
-//[GET ADDRESS BY ID]
-
+//[GET ADDRESS BY ID] /:addressId
+const getAddressByID = async (req, res) => {
+    const addressId = req.params.id
+    try {
+        const address = await Address.findOne({
+            _id: addressId,
+        }).lean()
+        if (!address) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                status: HTTP_STATUS.NOT_FOUND,
+                message: 'No Address found.',
+            })
+        }
+        res.status(HTTP_STATUS.OK).json({
+            success: true,
+            status: HTTP_STATUS.CREATED,
+            message: 'Get address success.',
+            address,
+        })
+    } catch (error) {
+        console.log(
+            '🚀 ~ file: address.controller.js:17 ~ getAllAddress ~ error:',
+            error
+        )
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to get address.',
+        })
+    }
+}
 //[POST ADDRESS]
 const createAddress = async (req, res) => {
     try {
-        const { provine, district, ward, detail, zipCode, country } = req.body
+        const {
+            provinceName,
+            districtName,
+            wardName,
+            detail,
+            zipCode,
+            country,
+        } = req.body
+
         const oldAdress = await Address.findOne({
-            zipCode: zipCode,
+            'ward.wardName': wardName.toString().trim(),
+            detail: detail.toString().trim(),
+            zipCode: zipCode.toString().trim(),
+            'district.districtName': districtName.toString().trim(),
+            'province.provinceName': provinceName.toString().trim(),
+            country: country.toString().trim(),
         }).lean()
+
+
         if (oldAdress) {
             return res.status(HTTP_STATUS.CONFLICT).json({
                 success: false,
@@ -31,19 +92,31 @@ const createAddress = async (req, res) => {
                 message: 'This address already exists. ',
             })
         }
+
+        const countAddress = await Address.count({})
         const newAddress = await Address.create({
-            provine,
-            district,
-            ward,
+            province: {
+                provinceName: provinceName,
+                provinceId: countAddress + 1,
+            },
+            district: {
+                districtName: districtName,
+                districtId: countAddress + 1,
+            },
+            ward: {
+                wardName: wardName,
+                wardId: countAddress + 1,
+            },
             detail,
             zipCode,
             country,
         })
+
         if (!newAddress) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
                 success: false,
                 status: HTTP_STATUS.BAD_REQUEST,
-                message: 'Failed to create new address. ',
+                message: 'Your address is not valid',
             })
         }
         res.status(HTTP_STATUS.CREATED).json({
@@ -53,7 +126,10 @@ const createAddress = async (req, res) => {
             newAddress,
         })
     } catch (error) {
-        console.error('Failed to create new Address::::', error)
+        console.log(
+            '🚀 ~ file: address.controller.js:66 ~ createAddress ~ error:',
+            error
+        )
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
@@ -61,10 +137,103 @@ const createAddress = async (req, res) => {
         })
     }
 }
-//[PUT ADDRESS]
+//[PUT ADDRESS]  /:address/update
+const updateAddress = async (req, res) => {
+    try {
+        const addressId = req.params.id
+        const { province, district, ward, detail, zipCode, country } = req.body
 
+        const oldAdress = await Address.findOne({
+            _id: addressId,
+        }).lean()
+
+        if (!oldAdress) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                status: HTTP_STATUS.NOT_FOUND,
+                message: 'This address already exists. ',
+            })
+        }
+
+        const updateAddress = await Address.findByIdAndUpdate(
+            {
+                _id: addressId,
+            },
+            {
+                $set: {
+                    province,
+                    district,
+                    ward,
+                    detail,
+                    zipCode,
+                    country,
+                },
+            },
+            { new: true }
+        )
+
+        if (!updateAddress) {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({
+                success: false,
+                status: HTTP_STATUS.BAD_REQUEST,
+                message: 'Update address failed.',
+            })
+        }
+        res.status(HTTP_STATUS.CREATED).json({
+            success: true,
+            status: HTTP_STATUS.CREATED,
+            message: 'Update Address success.',
+            address: updateAddress,
+        })
+    } catch (error) {
+        console.log(
+            '🚀 ~ file: address.controller.js:66 ~ updateAddress ~ error:',
+            error
+        )
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to update address.',
+        })
+    }
+}
 //[DELETE ADDRESS]
+const deleteAddress = async (req, res) => {
+    try {
+        const addressId = req.body.id
+
+        const deleteAddress = await Address.findByIdAndDelete(addressId)
+
+        if (!deleteAddress) {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({
+                success: false,
+                status: HTTP_STATUS.BAD_REQUEST,
+                message: 'Delete Address not valid.',
+            })
+        }
+
+        res.status(HTTP_STATUS.OK).json({
+            success: true,
+            status: HTTP_STATUS.OK,
+            message: 'Delete Address success.',
+        })
+    } catch (err) {
+        console.log(
+            '🚀 ~ file: address.controller.js:187 ~ deleteAddress ~ err:',
+            err
+        )
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to delete address.',
+        })
+    }
+}
 
 module.exports = {
     createAddress,
+    getAllAddress,
+    getAddressByID,
+    updateAddress,
+    deleteAddress,
 }

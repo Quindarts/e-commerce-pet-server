@@ -1,6 +1,4 @@
 const { check } = require('express-validator')
-const User = require('../models/user.model')
-
 
 
 exports.isValidUserNameLength = [

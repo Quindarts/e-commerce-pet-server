@@ -9,5 +9,9 @@ const ROUTE = {
     //Address
     ADDRESS: '/address',
     CREATE_ADDRESS: '/create',
+    GET_ALL_ADDRESS: '/get-all',
+    GET_ADDRESS_BY_ID: '/get-by-id/:id',
+    UPDATE_ADDRESS_BY_ID: '/:id/update',
+    DELETE_ADDRESS_BY_ID: '/delete',
 }
 module.exports = { ROUTE }

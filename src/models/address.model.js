@@ -22,8 +22,8 @@ const addressSchema = new mongoose.Schema({
     },
     ward: {
         wardId: {
-            type: String,
-            upperCase: true,
+            type: Number,
+            // upperCase: true,
             // required: true,
         },
         wardName: {
@@ -36,9 +36,9 @@ const addressSchema = new mongoose.Schema({
     },
     zipCode: {
         type: String,
-        upperCase: true,
+        // upperCase: true,
         // required: true,
-        unique: true,
+        // unique: true,
     },
     country: {
         type: String,
