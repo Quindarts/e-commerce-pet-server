@@ -149,7 +149,9 @@ const register = async (req, res) => {
 }
 //[POST GENERATE NEW ACCESSTOKEN]
 const generateAccessToken = async (req, res) => {
-    const refreshTokenFormClient = req.body.refreshToken
+    const refreshTokenFormClient =
+        req.body.refreshToken ||
+        req.headers['authorization'].replace('Bearer ', '')
 
     const signatureRefreshTokenClient = jwtHelper.signatureToken(
         refreshTokenFormClient
@@ -174,14 +176,11 @@ const generateAccessToken = async (req, res) => {
         })
     }
 
-    const decoded = jwtHelper.verifyToken(
-        'refresh',
-        refreshTokenFormClient
-    ).data
+    const decoded = jwtHelper.verifyToken('refresh', refreshTokenFormClient)
 
     const accessToken = jwtHelper.generateToken(
         'access',
-        { id: decoded._id, dateCreated: Date.now },
+        { id: decoded.id },
         '1h'
     )
 

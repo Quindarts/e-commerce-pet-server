@@ -21,5 +21,13 @@ const ROUTE = {
     GET_CATEGORY_BY_ID: '/get-by-id/:id',
     UPDATE_CATEGORY_BY_ID: '/:id/update',
     DELETE_CATEGORY_BY_ID: '/delete',
+
+    //User
+    USER: '/user',
+    CREATE_USER: '/create',
+    GET_ALL_USER: '/get-all',
+    GET_USER_BY_ID: '/get-by-id/:id',
+    UPDATE_USER_BY_ID: '/:id/update',
+    DELETE_USER_BY_ID: '/delete',
 }
 module.exports = { ROUTE }

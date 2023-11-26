@@ -12,7 +12,15 @@ function verifyToken(type = 'access', token) {
     const key = type
         ? process.env.TOKEN_SECRET_KEY
         : process.env.REFRESH_TOKEN_SECRET_KEY
-    return jwt.verify(token, key)
+
+    try {
+        return { payload: jwt.verify(token, key), expired: false }
+    } catch (error) {
+        if (error.name == 'TokenExpiredError') {
+            return { payload: jwt.decode(token), expired: true }
+        }
+        throw error
+    }
 }
 function signatureToken(token) {
     return token.split('.')[2]
