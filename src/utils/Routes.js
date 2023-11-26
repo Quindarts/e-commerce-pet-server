@@ -13,5 +13,13 @@ const ROUTE = {
     GET_ADDRESS_BY_ID: '/get-by-id/:id',
     UPDATE_ADDRESS_BY_ID: '/:id/update',
     DELETE_ADDRESS_BY_ID: '/delete',
+
+    //Category
+    CATEGORY: '/category',
+    CREATE_CATEGORY: '/create',
+    GET_ALL_CATEGORY: '/get-all',
+    GET_CATEGORY_BY_ID: '/get-by-id/:id',
+    UPDATE_CATEGORY_BY_ID: '/:id/update',
+    DELETE_CATEGORY_BY_ID: '/delete',
 }
 module.exports = { ROUTE }

@@ -15,7 +15,7 @@ const getAllAddress = async (req, res) => {
         }
         res.status(HTTP_STATUS.OK).json({
             success: true,
-            status: HTTP_STATUS.CREATED,
+            status: HTTP_STATUS.OK,
             message: 'Get list address success.',
             listAddress,
         })
@@ -83,7 +83,6 @@ const createAddress = async (req, res) => {
             'province.provinceName': provinceName.toString().trim(),
             country: country.toString().trim(),
         }).lean()
-
 
         if (oldAdress) {
             return res.status(HTTP_STATUS.CONFLICT).json({
@@ -208,7 +207,7 @@ const deleteAddress = async (req, res) => {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
                 success: false,
                 status: HTTP_STATUS.BAD_REQUEST,
-                message: 'Delete Address not valid.',
+                message: 'Delete Failed. No Address valid.',
             })
         }
 
