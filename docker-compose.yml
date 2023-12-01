@@ -1,0 +1,39 @@
+version: '3.4'
+
+services:
+    node:
+        container_name: node_server
+        build: .
+        ports:
+            - 5000:5000
+        volumes:
+            - .:/app
+
+        networks:
+            - common
+        restart: always
+        environment:
+            PORT: 5000
+            CLIENT_URL: 'http://localhost:3000'
+            BASE_URL_DB: 'mongodb://mongo/ecommerce_server_pet'
+            CLOUD_DB_USERNAME: 'adminPet'
+            CLOUD_DB_PASSWORD: 'BYNdwhez3HNzUPmc'
+            CLOUD_IMAGE_NAME: 'dyd2nynrp'
+            CLOUD_IMAGE_API_KEY: 329673611634987
+            CLOUD_IMAGE_API_SECRET: 'ub6udu92OhFMqWK3oa0brRiJu3s'
+            PASSWORD_SECRET_KEY: 'abcdefgquang'
+            TOKEN_SECRET_KEY: 'OqUWbNm7CGRGjochQhBVkA'
+            REFRESH_TOKEN_SECRET_KEY: 'YhrQi5+2uotvS1L8Av9bIA=='
+    mongo:
+        container_name: mongo
+        image: mongo
+        restart: always
+        ports:
+            - 27017:27017
+        volumes:
+            - ./data:/data/db
+        networks:
+            - common
+
+networks:
+    common:

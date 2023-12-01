@@ -15,7 +15,7 @@ const corsOptions = {
     origin: ['*'],
     optionsSuccessStatus: 200,
 }
-
+    
 app.use(helmet())
 app.use(cors(corsOptions))
 
