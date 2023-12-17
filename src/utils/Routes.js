@@ -15,7 +15,7 @@ const ROUTE = {
     DELETE_ADDRESS_BY_ID: '/delete',
 
     //Category
-    CATEGORY: '/category',
+    CATEGORY: '/categorys',
     CREATE_CATEGORY: '/create',
     GET_ALL_CATEGORY: '/get-all',
     GET_CATEGORY_BY_ID: '/get-by-id/:id',
@@ -23,11 +23,16 @@ const ROUTE = {
     DELETE_CATEGORY_BY_ID: '/delete',
 
     //User
-    USER: '/user',
+    USER: '/users',
     CREATE_USER: '/create',
     GET_ALL_USER: '/get-all',
     GET_USER_BY_ID: '/get-by-id/:id',
     UPDATE_USER_BY_ID: '/:id/update',
     DELETE_USER_BY_ID: '/delete',
+
+    //Product
+    PRODUCT: '/products',
+    PRODUCT_BY_ID: '/:product_id',
+    PRODUCT_CHANGE_STATUS: '/status/:product_id',
 }
 module.exports = { ROUTE }

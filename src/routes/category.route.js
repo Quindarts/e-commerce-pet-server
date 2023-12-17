@@ -23,6 +23,7 @@ router.get(
     getCategoryById
 )
 
+//[ROUTE GET] /get-all
 router.get(ROUTE.GET_ALL_CATEGORY, getAllCategory)
 
 //[ROUTE POST]

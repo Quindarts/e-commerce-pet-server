@@ -4,11 +4,13 @@ function generateToken(type = 'access', payload, tokenLife) {
     const key = type
         ? process.env.TOKEN_SECRET_KEY
         : process.env.REFRESH_TOKEN_SECRET_KEY
+
     return jwt.sign({ data: payload }, key, {
         expiresIn: tokenLife,
     })
 }
 function verifyToken(type = 'access', token) {
+    
     const key = type
         ? process.env.TOKEN_SECRET_KEY
         : process.env.REFRESH_TOKEN_SECRET_KEY

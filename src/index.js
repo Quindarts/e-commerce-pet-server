@@ -7,6 +7,7 @@ const { appConfig } = require('./config/app')
 const cors = require('cors')
 const route = require('./routes')
 const helper = require('./helper/index')
+const { generateProductCode } = require('./helper/randomCode')
 
 app.use(express.json())
 mongoDB.connect()
@@ -15,7 +16,7 @@ const corsOptions = {
     origin: ['*'],
     optionsSuccessStatus: 200,
 }
-    
+
 app.use(helmet())
 app.use(cors(corsOptions))
 
