@@ -7,12 +7,8 @@ const ROUTE = {
     GENERATE_ACCESSTOKEN: '/accessToken-generate',
 
     //Address
-    ADDRESS: '/address',
-    CREATE_ADDRESS: '/create',
-    GET_ALL_ADDRESS: '/get-all',
-    GET_ADDRESS_BY_ID: '/get-by-id/:id',
-    UPDATE_ADDRESS_BY_ID: '/:id/update',
-    DELETE_ADDRESS_BY_ID: '/delete',
+    ADDRESS: '/addresses',
+    GET_ADDRESS_BY_ID: '/:address_id',
 
     //Category
     CATEGORY: '/categorys',

@@ -18,7 +18,9 @@ exports.isValidCountryLength = [
     },
 ]
 exports.isHavedAddressId = [
-    check('id').isLength({ min: 10 }).withMessage('AddressId is not valid'),
+    check('address_id')
+        .isLength({ min: 10 })
+        .withMessage('AddressId is not valid'),
     (req, res, next) => {
         next()
     },

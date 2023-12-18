@@ -16,14 +16,14 @@ const { validate } = require('../middlewares/validation')
 const router = express.Router()
 
 //[GET] get all address
-router.get(ROUTE.GET_ALL_ADDRESS, getAllAddress)
+router.get('/', getAllAddress)
 
 //[GET] get address by ID
 router.get(ROUTE.GET_ADDRESS_BY_ID, getAddressByID)
 
-//[POST]
+//[POST] create address
 router.post(
-    ROUTE.CREATE_ADDRESS,
+    '/',
     isValidProvinceLength,
     isValidCountryLength,
     validate,
@@ -32,7 +32,7 @@ router.post(
 
 //[PUT] update address by ID
 router.put(
-    ROUTE.UPDATE_ADDRESS_BY_ID,
+    ROUTE.GET_ADDRESS_BY_ID,
     isValidProvinceLength,
     isValidCountryLength,
     validate,
@@ -41,7 +41,7 @@ router.put(
 
 //[DELETE] delete address by ID
 router.delete(
-    ROUTE.DELETE_ADDRESS_BY_ID,
+    ROUTE.GET_ADDRESS_BY_ID,
     isHavedAddressId,
     validate,
     deleteAddress

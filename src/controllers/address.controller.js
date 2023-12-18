@@ -31,12 +31,12 @@ const getAllAddress = async (req, res) => {
         })
     }
 }
-//[GET ADDRESS BY ID] /:addressId
+//[GET ADDRESS BY ID] /:address_id
 const getAddressByID = async (req, res) => {
-    const addressId = req.params.id
+    const { address_id } = req.params
     try {
         const address = await Address.findOne({
-            _id: addressId,
+            _id: address_id,
         }).lean()
         if (!address) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -63,7 +63,7 @@ const getAddressByID = async (req, res) => {
         })
     }
 }
-//[POST ADDRESS]
+//[POST ADDRESS] create address
 const createAddress = async (req, res) => {
     try {
         const {
@@ -136,14 +136,14 @@ const createAddress = async (req, res) => {
         })
     }
 }
-//[PUT ADDRESS]  /:address/update
+//[PUT ADDRESS]  update address
 const updateAddress = async (req, res) => {
     try {
-        const addressId = req.params.id
+        const { address_id } = req.params
         const { province, district, ward, detail, zipCode, country } = req.body
 
         const oldAdress = await Address.findOne({
-            _id: addressId,
+            _id: address_id,
         }).lean()
 
         if (!oldAdress) {
@@ -156,7 +156,7 @@ const updateAddress = async (req, res) => {
 
         const updateAddress = await Address.findByIdAndUpdate(
             {
-                _id: addressId,
+                _id: address_id,
             },
             {
                 $set: {
@@ -199,9 +199,9 @@ const updateAddress = async (req, res) => {
 //[DELETE ADDRESS]
 const deleteAddress = async (req, res) => {
     try {
-        const addressId = req.body.id
+        const { address_id } = req.params || req.body
 
-        const deleteAddress = await Address.findByIdAndDelete(addressId)
+        const deleteAddress = await Address.findByIdAndDelete(address_id)
 
         if (!deleteAddress) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
