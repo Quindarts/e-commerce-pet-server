@@ -11,7 +11,7 @@ const {
     isValidProvinceLength,
     isValidCountryLength,
     isHavedAddressId,
-} = require('../middlewares/addressValidations')
+} = require('../middlewares/address.validations')
 const { validate } = require('../middlewares/validation')
 const router = express.Router()
 

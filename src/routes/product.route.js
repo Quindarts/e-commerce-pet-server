@@ -8,9 +8,14 @@ const {
     updateProduct,
     deleteProduct,
 } = require('../controllers/product.controller')
+const {
+    isValidIdBodyAndQuery,
+    isValidIdBodyAndQueryParams,
+} = require('../middlewares/product.validation')
+const { validate } = require('../middlewares/validation')
 
 //[ROUTE GET ALL] //get-all?limit=&offset=
-router.get('/', getAllProduct)
+router.get('/', isValidIdBodyAndQueryParams, validate, getAllProduct)
 
 //[ROUTE GET] /:id
 router.get(ROUTE.PRODUCT_BY_ID, getProductByID)
@@ -19,7 +24,7 @@ router.get(ROUTE.PRODUCT_BY_ID, getProductByID)
 router.post('/', createProduct)
 
 //[ROUTE UPDATE]
-router.put(ROUTE.PRODUCT_BY_ID, updateProduct)
+router.put(ROUTE.PRODUCT_BY_ID, isValidIdBodyAndQuery, validate, updateProduct)
 
 //[ROUTE DELETE]
 router.put(ROUTE.PRODUCT_CHANGE_STATUS, deleteProduct)

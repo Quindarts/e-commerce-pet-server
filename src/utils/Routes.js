@@ -16,11 +16,8 @@ const ROUTE = {
 
     //Category
     CATEGORY: '/categorys',
-    CREATE_CATEGORY: '/create',
-    GET_ALL_CATEGORY: '/get-all',
-    GET_CATEGORY_BY_ID: '/get-by-id/:id',
-    UPDATE_CATEGORY_BY_ID: '/:id/update',
-    DELETE_CATEGORY_BY_ID: '/delete',
+    GET_CATEGORY_BY_ID: '/:category_id',
+    // DELETE_CATEGORY_BY_ID: '/:category_id',
 
     //User
     USER: '/users',

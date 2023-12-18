@@ -13,7 +13,7 @@ const {
     isValidNameCategoryLength,
     isValidTotalCategory,
     isValidCategoryId,
-} = require('../middlewares/categoryValidation')
+} = require('../middlewares/category.validation')
 
 //[ROUTE GET] /get-by-id/:id
 router.get(
@@ -24,11 +24,11 @@ router.get(
 )
 
 //[ROUTE GET] /get-all
-router.get(ROUTE.GET_ALL_CATEGORY, getAllCategory)
+router.get("/", getAllCategory)
 
 //[ROUTE POST]
 router.post(
-    ROUTE.CREATE_CATEGORY,
+    "/",
     isValidNameCategoryLength,
     isValidTotalCategory,
     validate,
@@ -37,7 +37,7 @@ router.post(
 
 //[ROUTE UPDATE]
 router.put(
-    ROUTE.UPDATE_CATEGORY_BY_ID,
+    ROUTE.GET_CATEGORY_BY_ID,
     isValidCategoryId,
     validate,
     updateCategory
@@ -45,7 +45,7 @@ router.put(
 
 //[ROUTE DELETE]
 router.delete(
-    ROUTE.DELETE_CATEGORY_BY_ID,
+    ROUTE.GET_CATEGORY_BY_ID,
     isValidCategoryId,
     validate,
     deleteCategory

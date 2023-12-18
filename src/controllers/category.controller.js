@@ -2,11 +2,12 @@ const Category = require('.././models/category.model')
 const helperCode = require('../helper/randomCode')
 const { HTTP_STATUS } = require('../utils/constant')
 
-//[GET CATEGORY BY ID] /:categoryId
+//[GET CATEGORY BY ID] /:category_id
 const getCategoryById = async (req, res) => {
-    const categoryId = req.body.id || req.params.id
+    const { category_id } = req.params
+
     try {
-        const category = await Category.findOne({ _id: categoryId }).lean()
+        const category = await Category.findOne({ _id: category_id }).lean()
 
         if (!category) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -119,12 +120,12 @@ const createCategory = async (req, res) => {
 //[PUT]
 const updateCategory = async (req, res) => {
     try {
-        const categoryId = req.params.id || req.body.id
+        const { category_id } = req.params || req.body
 
         const { name, total, description } = req.body
 
         const oldCategory = await Category.findOne({
-            _id: categoryId,
+            _id: category_id,
         })
         if (!oldCategory) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -136,7 +137,7 @@ const updateCategory = async (req, res) => {
 
         const updateCategory = await Category.findByIdAndUpdate(
             {
-                _id: categoryId,
+                _id: category_id,
             },
             {
                 $set: {
@@ -171,9 +172,9 @@ const updateCategory = async (req, res) => {
 //[DELETE]
 const deleteCategory = async (req, res) => {
     try {
-        const categoryId = req.body.id
+        const { category_id } = req.params
 
-        const deleteCategory = await Category.findByIdAndDelete(categoryId)
+        const deleteCategory = await Category.findByIdAndDelete(category_id)
 
         if (!deleteCategory) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({

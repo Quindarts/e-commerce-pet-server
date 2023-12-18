@@ -10,7 +10,7 @@ const {
     isValidEmail,
     isValidPasswordLength,
     isMatchPasswordRegex,
-} = require('../middlewares/authValidations')
+} = require('../middlewares/auth.validations')
 const { validate } = require('../middlewares/validation')
 const router = express.Router()
 
