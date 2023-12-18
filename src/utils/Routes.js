@@ -21,11 +21,7 @@ const ROUTE = {
 
     //User
     USER: '/users',
-    CREATE_USER: '/create',
-    GET_ALL_USER: '/get-all',
-    GET_USER_BY_ID: '/get-by-id/:id',
-    UPDATE_USER_BY_ID: '/:id/update',
-    DELETE_USER_BY_ID: '/delete',
+    GET_USER_BY_ID: '/:user_id',
 
     //Product
     PRODUCT: '/products',
