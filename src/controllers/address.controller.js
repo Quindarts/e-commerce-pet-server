@@ -31,6 +31,7 @@ const getAllAddress = async (req, res) => {
         })
     }
 }
+
 //[GET ADDRESS BY ID] /:address_id
 const getAddressByID = async (req, res) => {
     const { address_id } = req.params
@@ -63,6 +64,7 @@ const getAddressByID = async (req, res) => {
         })
     }
 }
+
 //[POST ADDRESS] create address
 const createAddress = async (req, res) => {
     try {
@@ -136,6 +138,7 @@ const createAddress = async (req, res) => {
         })
     }
 }
+
 //[PUT ADDRESS]  update address
 const updateAddress = async (req, res) => {
     try {
@@ -196,6 +199,7 @@ const updateAddress = async (req, res) => {
         })
     }
 }
+
 //[DELETE ADDRESS]
 const deleteAddress = async (req, res) => {
     try {
