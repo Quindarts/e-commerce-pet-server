@@ -13,7 +13,7 @@ app.use(express.json())
 mongoDB.connect()
 
 const corsOptions = {
-    origin: ['*'],
+    origin: '*',
     optionsSuccessStatus: 200,
 }
 
