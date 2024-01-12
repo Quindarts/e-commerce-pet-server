@@ -15,13 +15,13 @@ const ROUTE = {
     GET_CATEGORY_BY_ID: '/:category_id',
     // DELETE_CATEGORY_BY_ID: '/:category_id',
 
-    //User
-    USER: '/users',
-    GET_USER_BY_ID: '/:user_id',
-
     //Product
     PRODUCT: '/products',
     PRODUCT_BY_ID: '/:product_id',
     PRODUCT_CHANGE_STATUS: '/status/:product_id',
+
+    //User
+    USER: '/users',
+    USER_BY_ID: '/:user_id',
 }
 module.exports = { ROUTE }

@@ -11,7 +11,7 @@ const getAllProduct = async (req, res) => {
         .limit(limit)
         .skip((offset - 1) * limit)
         .sort({ createdAt: -1 })
-        .lean()
+        .lean() 
 
     if (!listProduct) {
         return res.status(HTTP_STATUS.NOT_FOUND).json({
