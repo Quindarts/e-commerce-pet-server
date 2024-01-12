@@ -23,5 +23,10 @@ const ROUTE = {
     //User
     USER: '/users',
     USER_BY_ID: '/:user_id',
+
+    //Cart
+    CART: '/carts',
+    CART_BY_USER_ID: '/:user_id',
+    CART_UPDATE_BY_USER_ID: 'update/:user_id',
 }
 module.exports = { ROUTE }

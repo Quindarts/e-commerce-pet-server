@@ -10,7 +10,6 @@ function generateToken(type = 'access', payload, tokenLife) {
     })
 }
 function verifyToken(type = 'access', token) {
-    
     const key = type
         ? process.env.TOKEN_SECRET_KEY
         : process.env.REFRESH_TOKEN_SECRET_KEY

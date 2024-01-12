@@ -24,11 +24,11 @@ router.get(
 )
 
 //[ROUTE GET] /get-all
-router.get("/", getAllCategory)
+router.get('/', getAllCategory)
 
 //[ROUTE POST]
 router.post(
-    "/",
+    '/',
     isValidNameCategoryLength,
     isValidTotalCategory,
     validate,

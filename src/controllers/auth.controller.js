@@ -8,7 +8,7 @@ const RefreshToken = require('../models/refreshToken.model')
 //[POST LOGIN ]
 const login = async (req, res) => {
     const { userName, password, remmber } = req.body
-    var refreshToken = req.headers['authorization'].replace('Bearer ', '')
+    var refreshToken = ''
     try {
         //Checked Username
         const user = await User.findOne({
@@ -39,11 +39,16 @@ const login = async (req, res) => {
             }
 
             //Checked RefreshToken
-            if (!refreshToken) {
+            if (refreshToken === '') {
                 refreshToken = jwtHelper.generateToken(
                     'refresh',
                     { id: user._id, dateCreated: Date.now },
                     '30000h'
+                )
+            } else {
+                refreshToken = req.headers['authorization'].replace(
+                    'Bearer ',
+                    ''
                 )
             }
 
@@ -176,14 +181,16 @@ const generateAccessToken = async (req, res) => {
         })
     }
 
-    const decoded = jwtHelper.verifyToken('refresh', refreshTokenFormClient)
+    const decoded = await jwtHelper.verifyToken(
+        'refresh',
+        refreshTokenFormClient
+    )
 
     const accessToken = jwtHelper.generateToken(
         'access',
-        { id: decoded.id },
+        { id: decoded.payload.data.id },
         '1h'
     )
-
     res.status(HTTP_STATUS.CREATED).json({
         success: true,
         status: HTTP_STATUS.CREATED,

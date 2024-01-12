@@ -1,7 +1,7 @@
 const express = require('express')
 const { ROUTE } = require('../utils/Routes')
 const { getAllUser, getUserById } = require('../controllers/user.controller')
-const { isExpiredToken } = require('../middlewares/checkedToken')
+const { isExpiredToken } = require('../handler/token.handler')
 const router = express.Router()
 
 //[GET] get-all

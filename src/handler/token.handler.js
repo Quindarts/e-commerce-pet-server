@@ -15,7 +15,6 @@ const isRevokedToken = (req, res, next) => {
                 message: 'No token provided.',
             })
         }
-
     } catch (error) {
         console.log(
             '🚀 ~ file: checkToken.js:7 ~ isRevokedToken ~ error:',
@@ -64,4 +63,4 @@ const isExpiredToken = (req, res, next) => {
         })
     }
 }
-module.exports = { isExpiredToken }
+module.exports = { isExpiredToken, isRevokedToken }
