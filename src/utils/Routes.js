@@ -19,10 +19,13 @@ const ROUTE = {
     PRODUCT: '/products',
     PRODUCT_BY_ID: '/:product_id',
     PRODUCT_CHANGE_STATUS: '/status/:product_id',
+    PRODUCT_FILTER: '/:',
+    PRODUCT_QUERY: '/:',
 
     //User
     USER: '/users',
     USER_BY_ID: '/:user_id',
+    USER_CHANGE_ACTIVE: '/change_active/:user_id',
 
     //Cart
     CART: '/carts',

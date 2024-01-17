@@ -22,6 +22,16 @@ const productSchema = new mongoose.Schema({
             },
         },
     ],
+    attribute_product:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'AttributeProduct',
+            required: true,
+        }
+    ],
+    total_attribute : {
+        type: Number,
+    },
     price: {
         type: Number,
         required: true,
@@ -64,3 +74,5 @@ const productSchema = new mongoose.Schema({
     },
 })
 module.exports = mongoose.model('Product', productSchema)
+
+

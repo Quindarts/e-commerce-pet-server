@@ -62,7 +62,7 @@ async function getUserById(req, res) {
                 message: 'User is blocked',
             })
         }
-        
+
         res.status(HTTP_STATUS.OK).json({
             success: true,
             status: HTTP_STATUS.OK,
@@ -73,4 +73,96 @@ async function getUserById(req, res) {
         console.log('🚀 ~ getUserById ~ error:', error)
     }
 }
-module.exports = { getAllUser, getUserById }
+//[UPDATE USER]
+const updateUser = async (req, res) => {
+    const {
+        _id,
+        first_name,
+        last_name,
+        phone,
+        address,
+        rewardPoints,
+        gender,
+        avatar,
+        role,
+        isActive,
+        idFacebook,
+        idGoogle,
+        dateOfBirth,
+    } = req.body
+
+    try {
+        const userOld = await User.findById({ _id: _id })
+
+        if (!userOld) {
+            res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                status: HTTP_STATUS.NOT_FOUND,
+                message: 'No User found',
+            })
+        }
+        const userUpdate = await User.findByIdAndUpdate(
+            { _id: _id },
+            {
+                $set: {
+                    first_name,
+                    last_name,
+                    phone,
+                    address,
+                    rewardPoints,
+                    gender,
+                    avatar,
+                    role,
+                    isActive,
+                    idFacebook,
+                    idGoogle,
+                    dateOfBirth,
+                },
+            },
+            { new: true }
+        )
+        res.status(HTTP_STATUS.OK).json({
+            success: true,
+            status: HTTP_STATUS.OK,
+            message: 'Update User success.',
+            user: userUpdate,
+        })
+    } catch (error) {
+        console.log('🚀 ~ updateUser ~ error:', error)
+    }
+}
+const changeActiveUser = async (req, res) => {
+    const { user_id } = req.params
+    try {
+        const currentUser = await User.findById(user_id).lean()
+
+        if (!currentUser) {
+            res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                status: HTTP_STATUS.NOT_FOUND,
+                message: 'No User found',
+            })
+        }
+        const newActive = !currentUser.isActive
+        const userUpdate = await User.findByIdAndUpdate(
+            user_id,
+            {
+                $set: {
+                    isActive: newActive,
+                },
+            },
+            {
+                new: true,
+            }
+        )
+        res.status(HTTP_STATUS.OK).json({
+            success: true,
+            status: HTTP_STATUS.OK,
+            message: 'Change active User success.',
+            user: userUpdate,
+        })
+    } catch (error) {
+        console.log('🚀 ~ unActiveUser ~ error:', error)
+    }
+}
+module.exports = { getAllUser, getUserById, updateUser, changeActiveUser }

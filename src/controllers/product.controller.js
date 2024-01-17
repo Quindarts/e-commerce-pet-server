@@ -11,7 +11,7 @@ const getAllProduct = async (req, res) => {
         .limit(limit)
         .skip((offset - 1) * limit)
         .sort({ createdAt: -1 })
-        .lean() 
+        .lean()
 
     if (!listProduct) {
         return res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -30,6 +30,89 @@ const getAllProduct = async (req, res) => {
             page: offset,
         },
     })
+}
+
+//[GET PRODUCT BY QUERY] /?query
+const getProductByQuery = async (req, res) => {
+    const { name, code, offset, limit, sortField, sortType } = Object.assign(
+        {},
+        req.query
+    )
+    var regex = {
+        name: {
+            $regex: name ? name : '',
+            $options: 'i',
+        },
+        code: {
+            $regex: code ? code : '',
+            $options: 'i',
+        },
+    }
+    try {
+        const list_product = await Product.find(regex)
+            .populate('Category')
+            .limit(limit)
+            .skip((offset - 1) * limit)
+            .sort({ [sortField]: sortType })
+            .sort({ createdAt: -1 })
+            .lean()
+
+        const total = await Product.find(regex).count()
+
+        res.status(HTTP_STATUS.OK).json({
+            success: true,
+            status: 200,
+            total,
+            list_product,
+        })
+    } catch (error) {
+        console.log('🚀 ~ getProductByQuery ~ error:', error)
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to query product.',
+        })
+    }
+}
+
+//[FILTER PRODUCT ]
+const filterProduct = async (req, res) => {
+    const { offset, limit, sortField, sortType } = Object.assign({}, req.query)
+
+    const { category_id, brand, discount, rating } = Object.assign(
+        {},
+        req.query
+    )
+    var query = {}
+
+    if (category_id !== undefined) query['subcategory'] = subCategoryId
+    if (brand !== undefined) {
+        const brandArr = brand.split(',')
+        query['brand'] = { $in: brandArr }
+    }
+    if (discount !== undefined) query['discount'] = { $lt: discount }
+    if (rating !== undefined) query['avg_review'] = { $lt: rating }
+
+    try {
+        const products = await Product.find(query)
+            .populate('Category')
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .sort({ [sortField]: sortType })
+            .sort({ createdAt: -1 })
+            .lean()
+
+        const totalRows = await Product.find(query).count()
+
+        res.status(HTTP_STATUS.OK).json({
+            success: true,
+            status: HTTP_STATUS.OK,
+            totalRows,
+            products,
+        })
+    } catch (error) {
+        sendError(res, error)
+    }
 }
 
 //[GET PRODUCT BY ID] /get-product-by-id:id
@@ -268,4 +351,6 @@ module.exports = {
     getAllProduct,
     updateProduct,
     deleteProduct,
+    filterProduct,
+    getProductByQuery,
 }

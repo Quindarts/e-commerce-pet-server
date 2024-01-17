@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema({
     phone: {
         type: String,
         required: false,
+        default: '',
     },
     address: ['adressSchema'],
     rewardPoints: {
@@ -37,6 +38,7 @@ const userSchema = new mongoose.Schema({
     gender: {
         type: String,
         enum: ['female', 'male'],
+        default: null,
     },
     avatar: {
         url: {
@@ -65,6 +67,7 @@ const userSchema = new mongoose.Schema({
     },
     dateOfBirth: {
         type: mongoose.Schema.Types.Date,
+        default: null,
     },
 })
 module.exports = mongoose.model('User', userSchema)

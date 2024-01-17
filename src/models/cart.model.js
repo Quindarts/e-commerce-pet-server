@@ -14,17 +14,11 @@ const cartSchema = new mongoose.Schema(
                     ref: 'Product',
                     required: true,
                 },
-                options: [
-                    {
-                        stock: Number,
-                        weight: Number,
-                        price: {
-                            type: Number,
-                            required: true,
-                            min: 0,
-                        },
-                    },
-                ],
+                attribute_product_id: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'AttributeProduct',
+                    required: true,
+                },
                 quantity: {
                     type: Number,
                     default: 1,
