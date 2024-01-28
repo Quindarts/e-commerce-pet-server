@@ -38,7 +38,12 @@ const getCategoryById = async (req, res) => {
 //[GET ALL CATEGORY]
 const getAllCategory = async (req, res) => {
     try {
-        const listCategory = await Category.find().lean()
+        const { limit, offset } = Object.assign({}, req.query)
+        const listCategory = await Category.find()
+            .limit(limit)
+            .skip((offset - 1) * limit)
+            .sort({ createdAt: -1 })
+            .lean()
 
         if (!listCategory) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -52,6 +57,10 @@ const getAllCategory = async (req, res) => {
             status: HTTP_STATUS.OK,
             message: 'Get list Category success.',
             listCategory,
+            params: {
+                limit: limit,
+                page: offset,
+            },
         })
     } catch (error) {
         console.log(
@@ -80,10 +89,7 @@ const createCategory = async (req, res) => {
             })
         }
         let newCode = helperCode.generateRandomCategoryCode(6)
-        console.log(
-            '🚀 ~ file: category.controller.js:82 ~ createCategory ~ newCode:',
-            newCode
-        )
+
         const newCategory = await Category.create({
             code: newCode,
             name: name,
@@ -110,7 +116,7 @@ const createCategory = async (req, res) => {
             '🚀 ~ file: category.controller.js:36 ~ createCategory ~ error:',
             error
         )
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
             message: 'Failed to create category.',

@@ -9,6 +9,7 @@ const {
     deleteProduct,
     getProductByQuery,
     filterProduct,
+    getProductByCategory,
 } = require('../controllers/product.controller')
 const {
     isValidIdBodyAndQuery,
@@ -19,8 +20,11 @@ const { validate } = require('../middlewares/validation')
 //[ROUTE GET ALL] //get-all?limit=&offset=
 router.get('/', isValidIdBodyAndQueryParams, validate, getAllProduct)
 
-//[ROUTE GET BY QUERY] //
+//[ROUTE GET BY QUERY] // name, code
 router.get(ROUTE.PRODUCT_QUERY, getProductByQuery)
+
+//[ROUTE GET BY CATEGORY] // name, code, id
+router.get(ROUTE.PRODUCT_QUERY_BY_CATEGORY, getProductByCategory)
 
 //[ROUTE FILTER]
 router.get(ROUTE.PRODUCT_FILTER, filterProduct)

@@ -3,7 +3,6 @@ const Product = require('../models/product.model')
 const { HTTP_STATUS } = require('../utils/constant')
 
 //[GET LIST PRODUCT BY PARAMS ] /get-all-product?params
-
 const getAllProduct = async (req, res) => {
     const { limit, offset } = Object.assign({}, req.query)
     var listProduct = await Product.find()
@@ -31,8 +30,33 @@ const getAllProduct = async (req, res) => {
         },
     })
 }
+//[GET PRODUCT BY CATEGORY]
+const getProductByCategory = async (req, res) => {
+    const { category_id } = req.params
+    console.log('🚀 ~ getProductByCategory ~ category_id:', category_id)
 
-//[GET PRODUCT BY QUERY] /?query
+    try {
+        const list_product = await Product.find({ category: category_id })
+            .populate('category')
+            .sort({ createdAt: -1 })
+            .lean()
+        return res.status(HTTP_STATUS.OK).json({
+            success: true,
+            status: 200,
+            message: 'Search product by category query success.',
+            list_product,
+        })
+    } catch (error) {
+        console.log('🚀 ~ getProductByCategory ~ error:', error)
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to query product.',
+        })
+    }
+}
+
+//[GET PRODUCT BY SEARCH] /?query
 const getProductByQuery = async (req, res) => {
     const { name, code, offset, limit, sortField, sortType } = Object.assign(
         {},
@@ -50,7 +74,7 @@ const getProductByQuery = async (req, res) => {
     }
     try {
         const list_product = await Product.find(regex)
-            .populate('Category')
+            .populate('category')
             .limit(limit)
             .skip((offset - 1) * limit)
             .sort({ [sortField]: sortType })
@@ -62,6 +86,7 @@ const getProductByQuery = async (req, res) => {
         res.status(HTTP_STATUS.OK).json({
             success: true,
             status: 200,
+            message: 'Search to product by query success.',
             total,
             list_product,
         })
@@ -85,7 +110,7 @@ const filterProduct = async (req, res) => {
     )
     var query = {}
 
-    if (category_id !== undefined) query['subcategory'] = subCategoryId
+    if (category_id !== undefined) query['category'] = categoryId
     if (brand !== undefined) {
         const brandArr = brand.split(',')
         query['brand'] = { $in: brandArr }
@@ -95,9 +120,10 @@ const filterProduct = async (req, res) => {
 
     try {
         const products = await Product.find(query)
-            .populate('Category')
+            .populate('category')
+
             .limit(limit)
-            .skip((page - 1) * limit)
+            .skip((offset - 1) * limit)
             .sort({ [sortField]: sortType })
             .sort({ createdAt: -1 })
             .lean()
@@ -111,7 +137,13 @@ const filterProduct = async (req, res) => {
             products,
         })
     } catch (error) {
-        sendError(res, error)
+        console.log('🚀 ~ filterProduct ~ error:', error)
+
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to filter product.',
+        })
     }
 }
 
@@ -153,6 +185,7 @@ const createProduct = async (req, res) => {
     const {
         name,
         images,
+        attribute_product,
         price,
         avaiable,
         description,
@@ -186,6 +219,7 @@ const createProduct = async (req, res) => {
             brand,
             dimensions,
             category,
+            attribute_product,
             provider,
         })
         if (!newProduct) {
@@ -206,7 +240,7 @@ const createProduct = async (req, res) => {
             '🚀 ~ file: product.controller.js:28 ~ createProduct ~ error:',
             error
         )
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
             message: 'Failed to create new product.',
@@ -232,6 +266,7 @@ const updateProduct = async (req, res) => {
             brand,
             dimensions,
             category,
+            attribute_product,
             provider,
             isActive,
         } = req.body
@@ -258,6 +293,7 @@ const updateProduct = async (req, res) => {
                     price,
                     avaiable,
                     description,
+                    attribute_product,
                     tags,
                     brand,
                     dimensions,
@@ -286,7 +322,7 @@ const updateProduct = async (req, res) => {
             '🚀 ~ file: Product.controller.js:120 ~ updateProduct ~ error:',
             error
         )
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
             message: 'Failed to update product.',
@@ -326,7 +362,7 @@ const deleteProduct = async (req, res) => {
                 message: 'Delete Product failed.',
             })
         }
-        res.status(HTTP_STATUS.CREATED).json({
+        return res.status(HTTP_STATUS.CREATED).json({
             success: true,
             status: HTTP_STATUS.CREATED,
             message: 'Delete Product success.',
@@ -337,7 +373,7 @@ const deleteProduct = async (req, res) => {
             '🚀 ~ file: product.controller.js:208 ~ deleteProduct ~ error:',
             error
         )
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
             message: 'Failed to delete product.',
@@ -353,4 +389,5 @@ module.exports = {
     deleteProduct,
     filterProduct,
     getProductByQuery,
+    getProductByCategory,
 }

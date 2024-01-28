@@ -22,14 +22,14 @@ const productSchema = new mongoose.Schema({
             },
         },
     ],
-    attribute_product:[
+    attribute_product: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'AttributeProduct',
             required: true,
-        }
+        },
     ],
-    total_attribute : {
+    total_attribute: {
         type: Number,
     },
     price: {
@@ -74,5 +74,3 @@ const productSchema = new mongoose.Schema({
     },
 })
 module.exports = mongoose.model('Product', productSchema)
-
-

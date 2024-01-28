@@ -1,9 +1,11 @@
-const { Schema } = require('mongoose')
+const mongoose = require('mongoose')
 
-const attributeProduct = new Schema({
-    id: {
-        type: Schema.Types.ObjectId,
+const attributeProduct = new mongoose.Schema({
+    code: {
+        type: String,
         required: true,
+        uppercase: true,
+        unique: true,
     },
     name: {
         type: String,
@@ -18,6 +20,5 @@ const attributeProduct = new Schema({
         required: true,
     },
 })
-
 
 module.exports = mongoose.model('AttributeProduct', attributeProduct)

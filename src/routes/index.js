@@ -5,6 +5,8 @@ const category = require('./category.route')
 const user = require('./user.route')
 const product = require('./product.route')
 const cart = require('./cart.route')
+const attributeProduct = require('./attributeProduct.route')
+
 function router(app) {
     app.use(ROUTE.AUTH, auth)
     app.use(ROUTE.ADDRESS, address)
@@ -12,6 +14,7 @@ function router(app) {
     app.use(ROUTE.USER, user)
     app.use(ROUTE.PRODUCT, product)
     app.use(ROUTE.CART, cart)
+    app.use(ROUTE.ATTRIBUTE_PRODUCT, attributeProduct)
 }
 
 module.exports = router

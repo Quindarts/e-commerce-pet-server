@@ -19,8 +19,15 @@ const ROUTE = {
     PRODUCT: '/products',
     PRODUCT_BY_ID: '/:product_id',
     PRODUCT_CHANGE_STATUS: '/status/:product_id',
-    PRODUCT_FILTER: '/:',
-    PRODUCT_QUERY: '/:',
+    PRODUCT_FILTER: '/filter',
+    PRODUCT_QUERY: '/search',
+    PRODUCT_QUERY_BY_CATEGORY: '/category/:category_id',
+
+    //AttributeProduct
+    ATTRIBUTE_PRODUCT: '/attributeProducts',
+    ATTRIBUTE_PRODUCT_BY_ID: '/:attribute_product_id',
+    ATTRIBUTE_PRODUCT_FILTER: '/:',
+    ATTRIBUTE_PRODUCT_QUERY: '/:',
 
     //User
     USER: '/users',
