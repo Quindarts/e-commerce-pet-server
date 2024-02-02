@@ -78,7 +78,8 @@ const getAllCategory = async (req, res) => {
 //[POST]
 const createCategory = async (req, res) => {
     try {
-        const { name, total, description } = req.body
+        const { name, total, description, path, url, isActive } = req.body
+
         const oldCategory = await Category.findOne({ name: name }).lean()
 
         if (oldCategory) {
@@ -95,6 +96,9 @@ const createCategory = async (req, res) => {
             name: name,
             total: total,
             description: description,
+            path: path,
+            url: url,
+            isActive: isActive,
         })
 
         if (!newCategory) {
@@ -128,8 +132,7 @@ const updateCategory = async (req, res) => {
     try {
         const { category_id } = req.params || req.body
 
-        const { name, total, description } = req.body
-
+        const { name, total, description, path, url, isActive } = req.body
         const oldCategory = await Category.findOne({
             _id: category_id,
         })
@@ -150,6 +153,9 @@ const updateCategory = async (req, res) => {
                     name,
                     total,
                     description,
+                    path,
+                    url,
+                    isActive,
                 },
             },
             { new: true }
@@ -180,7 +186,17 @@ const deleteCategory = async (req, res) => {
     try {
         const { category_id } = req.params
 
-        const deleteCategory = await Category.findByIdAndDelete(category_id)
+        const unActiveCategory = await Category.findByIdAndUpdate(
+            {
+                _id: category_id,
+            },
+            {
+                $set: {
+                    isActive: false,
+                },
+            },
+            { new: true }
+        )
 
         if (!deleteCategory) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
@@ -194,6 +210,7 @@ const deleteCategory = async (req, res) => {
             success: true,
             status: HTTP_STATUS.OK,
             message: 'Delete Category success.',
+            category: unActiveCategory,
         })
     } catch (err) {
         console.log(

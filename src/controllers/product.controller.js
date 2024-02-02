@@ -33,8 +33,6 @@ const getAllProduct = async (req, res) => {
 //[GET PRODUCT BY CATEGORY]
 const getProductByCategory = async (req, res) => {
     const { category_id } = req.params
-    console.log('🚀 ~ getProductByCategory ~ category_id:', category_id)
-
     try {
         const list_product = await Product.find({ category: category_id })
             .populate('category')

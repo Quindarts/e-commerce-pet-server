@@ -22,6 +22,7 @@ router.post(ROUTE.USER_BY_ID, isExpiredToken, updateUser)
 //[POST CHANGE ACTIVE]
 router.put(ROUTE.USER_CHANGE_ACTIVE, isExpiredToken, changeActiveUser)
 //[DELETE]
+
 // router.post()
 
 module.exports = router
