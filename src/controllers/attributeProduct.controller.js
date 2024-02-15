@@ -1,6 +1,7 @@
 const AttributeProduct = require('../models/attributeProduct')
 const { HTTP_STATUS } = require('../utils/constant')
 const helperCode = require('../helper/randomCode')
+
 //[GET BY ID] GET ATTRIBUTE PRODUCT BY ID /:attribute_product_id
 const getAttributeProductById = async (req, res) => {
     const { attribute_product_id } = req.params
