@@ -8,6 +8,8 @@ const {
     updateCategory,
     deleteCategory,
     getListCategoryChildByPath,
+    getRootCategory,
+    getTreeCategory,
 } = require('../controllers/category.controller')
 const { ROUTE } = require('../utils/Routes')
 const {
@@ -16,14 +18,21 @@ const {
     isValidCategoryId,
 } = require('../middlewares/category.validation')
 
-//[ROUTE GET] /get-by-id/:id
-router.get(ROUTE.CATEGORY_BY_ID, isValidCategoryId, validate, getCategoryById)
-
 //[ROUTE GET] /get-all
 router.get('/', getAllCategory)
 
 //[ROUTE GET] /get-list-child-by-path
 router.get(ROUTE.CATEGORY_CHILD_BY_PATH_PARENT, getListCategoryChildByPath)
+
+//[ROUTE GET] //get-root-category
+router.get(ROUTE.CATEGORY_ROOT, getRootCategory)
+
+//[ROUTE GET] //get-tree-category
+
+router.get(ROUTE.CATEGORY_TREE, getTreeCategory)
+
+//[ROUTE GET] /get-by-id/:id
+router.get(ROUTE.CATEGORY_BY_ID, getCategoryById)
 
 //[ROUTE POST]
 router.post(
@@ -35,18 +44,8 @@ router.post(
 )
 
 //[ROUTE UPDATE]
-router.put(
-    ROUTE.CATEGORY_BY_ID,
-    isValidCategoryId,
-    validate,
-    updateCategory
-)
+router.put(ROUTE.CATEGORY_BY_ID, isValidCategoryId, validate, updateCategory)
 
 //[ROUTE DELETE]
-router.delete(
-    ROUTE.CATEGORY_BY_ID,
-    isValidCategoryId,
-    validate,
-    deleteCategory
-)
+router.delete(ROUTE.CATEGORY_BY_ID, isValidCategoryId, validate, deleteCategory)
 module.exports = router

@@ -43,6 +43,7 @@ const getListCategoryChildByPath = async (req, res) => {
         path: {
             $regex: path ? ',' + path + ',' : '',
         },
+        isActive: true,
     }
     try {
         const listCategory = await Category.find(regex).sort({ path: 1 })
@@ -54,6 +55,95 @@ const getListCategoryChildByPath = async (req, res) => {
         })
     } catch (error) {
         console.log('🚀 ~ getListCategoryChildByPath ~ error:', error)
+    }
+}
+
+const getAllChildernNodeByParentNode = async (parentNode) => {
+    try {
+        var regex = {
+            path: {
+                $regex: parentNode ? ',' + parentNode + ',' : '',
+            },
+            isActive: true,
+        }
+        const child = await Category.find(regex)
+            .sort({ path: 1 })
+            .select({ name: 1, path: 1 })
+
+        return child
+    } catch (error) {
+        console.log('🚀 ~ getAllChildernNodeByParentNode ~ error:', error)
+    }
+}
+
+//[GET ROOT CATEGORY ]
+const getRootCategory = async (req, res) => {
+    try {
+        const listCategory = await Category.find({
+            path: {
+                $regex: /^,index,/,
+            },
+        }).sort({ path: 1 })
+
+        res.status(HTTP_STATUS.OK).json({
+            success: true,
+            status: HTTP_STATUS.OK,
+            message: 'Get Category success.',
+            listCategory,
+        })
+        if (!listCategory) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                status: HTTP_STATUS.NOT_FOUND,
+                message: 'No list Category found.',
+            })
+        }
+    } catch (error) {
+        console.log('🚀 ~ getTreeCategory ~ error:', error)
+    }
+}
+//[GET ALL TREE CATEGORY]
+const getTreeCategory = async (req, res) => {
+    try {
+        var tree = []
+        const nodeRoot = await Category.find({
+            path: {
+                $regex: /^,index,/,
+            },
+        })
+            .sort({ path: 1 })
+            .select({ name: 1})
+        if (!nodeRoot) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                status: HTTP_STATUS.NOT_FOUND,
+                message: 'No list Category found.',
+            })
+        } else {
+            let tree = []
+            for (node in nodeRoot) {
+                let current_node = {
+                    _id: nodeRoot[node]._id,
+                    name: nodeRoot[node].name,
+                    child: [],
+                }
+
+                const child = await getAllChildernNodeByParentNode(
+                    current_node.name
+                )
+                current_node.child = child
+
+                tree.push(current_node)
+            }
+            return res.status(HTTP_STATUS.OK).json({
+                success: false,
+                status: HTTP_STATUS.OK,
+                message: 'Category found.',
+                tree,
+            })
+        }
+    } catch (error) {
+        console.log('🚀 ~ getTreeCategory ~ error:', error)
     }
 }
 //[GET ALL CATEGORY]
@@ -253,4 +343,6 @@ module.exports = {
     deleteCategory,
     updateCategory,
     getListCategoryChildByPath,
+    getRootCategory,
+    getTreeCategory,
 }

@@ -15,6 +15,8 @@ const ROUTE = {
     CATEGORY_BY_ID: '/:category_id',
     // DELETE_CATEGORY_BY_ID: '/:category_id',
     CATEGORY_CHILD_BY_PATH_PARENT: '/children/:path',
+    CATEGORY_ROOT: '/root_category',
+    CATEGORY_TREE: '/tree_category',
 
     //Product
     PRODUCT: '/products',
