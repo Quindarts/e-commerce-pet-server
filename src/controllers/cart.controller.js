@@ -1,12 +1,20 @@
 const Cart = require('../models/cart.model')
 const User = require('../models/user.model')
+const Product = require('../models/product.model')
 const { HTTP_STATUS } = require('../utils/constant')
 
+//[GET] GET ALL LIST CART
 const getAllCart = async (req, res) => {
     try {
         const listCart = await Cart.find().lean()
-
-        res.status(HTTP_STATUS.OK).json({
+        if (!listCart) {
+            return res.status(HTTP_STATUS.CONFLICT).json({
+                success: false,
+                status: HTTP_STATUS.CONFLICT,
+                message: 'Get all cart failed.',
+            })
+        }
+        return res.status(HTTP_STATUS.OK).json({
             success: true,
             status: HTTP_STATUS.OK,
             message: 'Get all cart success.',
@@ -15,13 +23,42 @@ const getAllCart = async (req, res) => {
     } catch (error) {
         console.log('🚀 ~ getAllCart ~ error:', error)
 
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
             message: 'Failed to get all cart.',
         })
     }
 }
+//[GET] BY USER ID
+const getCartByUserId = async (req, res) => {
+    try {
+        const { user_id } = req
+        const cart = await Cart.findOne({ _id: user_id }).lean()
+        if (!cart) {
+            return res.status(HTTP_STATUS.CONFLICT).json({
+                success: false,
+                status: HTTP_STATUS.CONFLICT,
+                message: 'Get cart failed.',
+            })
+        }
+        return res.status(HTTP_STATUS.OK).json({
+            success: true,
+            status: HTTP_STATUS.OK,
+            message: 'Get cart user success.',
+            cart,
+        })
+    } catch (error) {
+        console.log('🚀 ~ getCartByUserId ~ error:', error)
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to get cart by id',
+        })
+    }
+}
+
+//[POST] CREATE CART
 const createCart = async (req, res) => {
     try {
         const { user_id } = req
@@ -53,31 +90,34 @@ const createCart = async (req, res) => {
         })
     }
 }
-const getCartByUserId = async (req, res) => {
-    try {
-        const { user_id } = req
+//[PUT] TOGGLE PRODUCT CART
+// const toggleProductCart = async (req, res) => {
+//     const { product_id, cart_id, quantity } = req.body
+//     try {
+//         const product = Product.findById({ product_id }).lean()
 
-        const cart = await Cart.findOne({ _id: user_id }).lean()
+//         const productItem = await Cart.findOne({
+//             _id: user_id,
+//             'cart_details.product_id': product_id,
+//         })
 
-        res.status(HTTP_STATUS.OK).json({
-            success: true,
-            status: HTTP_STATUS.OK,
-            message: 'Get cart user success.',
-            cart,
-        })
-    } catch (error) {
-        console.log('🚀 ~ getCartByUserId ~ error:', error)
-        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-            message: 'Failed to get cart by id',
-        })
-    }
-}
+//         if (!product) {
+//             return res.status(HTTP_STATUS.NOT_FOUND).json({
+//                 success: false,
+//                 status: HTTP_STATUS.NOT_FOUND,
+//                 message: 'No product found.',
+//             })
+//         }
+//     } catch (error) {
+//         console.log('🚀 ~ toggleProductCart ~ error:', error)
+//     }
+// }
+//[PUT] UPDATE CART BY USER_ID
 const updateCart = async (req, res) => {
     try {
         const user_id = req.user_id
         const { cart_details } = req.body
+        const cart = await Cart.findById({ user_id }).lean()
 
         const updateCart = await Cart.findByIdAndUpdate(
             {
@@ -103,6 +143,7 @@ const updateCart = async (req, res) => {
         })
     }
 }
+// [PUT] CLEAR CART_DETAILS TO NULL
 const resetCart = async (req, res) => {
     const { user_id } = req
     try {

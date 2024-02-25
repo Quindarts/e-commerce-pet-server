@@ -7,6 +7,7 @@ const product = require('./product.route')
 const cart = require('./cart.route')
 const attributeProduct = require('./attributeProduct.route')
 const payment = require('./payment.route')
+const order = require('./order.route')
 function router(app) {
     app.use(ROUTE.AUTH, auth)
     app.use(ROUTE.ADDRESS, address)
@@ -16,6 +17,7 @@ function router(app) {
     app.use(ROUTE.CART, cart)
     app.use(ROUTE.ATTRIBUTE_PRODUCT, attributeProduct)
     app.use('/payment', payment)
+    app.use(ROUTE.ORDER, order)
 }
 
 module.exports = router

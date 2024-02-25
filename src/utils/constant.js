@@ -5,6 +5,21 @@ const ROLES = {
     WAREHOUSE: 'warehouse',
     USER: 'user',
 }
+const STATUS_ORDER = {
+    UNPAID: 'unpaid',
+    PAID: 'paid',
+    PROCESSING: 'processing',
+    CANCEL: 'cancel',
+}
+const PAYMENT_METHOD = {
+    ONLINE: 'on',
+    OFFLINE: 'off',
+}
+const STATUS_SHIPPING = {
+    PACKAGED: 'packaged',
+    DELIVERY: 'delivery',
+    DELIVERED: 'delivered',
+}
 const HTTP_STATUS = {
     CONTINUE: 100,
     SWITCHING_PROTOCOLS: 101,
@@ -63,4 +78,10 @@ const HTTP_STATUS = {
     INSUFFICIENT_STORAGE: 507,
     NETWORK_AUTHENTICATION_REQUIRED: 511,
 }
-module.exports = { HTTP_STATUS, ROLES }
+module.exports = {
+    HTTP_STATUS,
+    ROLES,
+    STATUS_ORDER,
+    STATUS_SHIPPING,
+    PAYMENT_METHOD,
+}

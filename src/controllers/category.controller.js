@@ -35,6 +35,27 @@ const getCategoryById = async (req, res) => {
     }
 }
 
+//[GET LIST CATEGORY CHILD BY CATEGORY PATH ]
+const getListCategoryChildByPath = async (req, res) => {
+    const { path } = req.params
+
+    var regex = {
+        path: {
+            $regex: path ? ',' + path + ',' : '',
+        },
+    }
+    try {
+        const listCategory = await Category.find(regex).sort({ path: 1 })
+        res.status(HTTP_STATUS.OK).json({
+            success: true,
+            status: HTTP_STATUS.OK,
+            message: 'Get Category  success.',
+            listCategory,
+        })
+    } catch (error) {
+        console.log('🚀 ~ getListCategoryChildByPath ~ error:', error)
+    }
+}
 //[GET ALL CATEGORY]
 const getAllCategory = async (req, res) => {
     try {
@@ -42,7 +63,7 @@ const getAllCategory = async (req, res) => {
         const listCategory = await Category.find()
             .limit(limit)
             .skip((offset - 1) * limit)
-            .sort({ createdAt: -1 })
+            .sort({ path: 1 })
             .lean()
 
         if (!listCategory) {
@@ -231,4 +252,5 @@ module.exports = {
     getCategoryById,
     deleteCategory,
     updateCategory,
+    getListCategoryChildByPath,
 }

@@ -1,4 +1,4 @@
-const AttributeProduct = require('../models/attributeProduct')
+const AttributeProduct = require('../models/attributeProduct.model')
 const { HTTP_STATUS } = require('../utils/constant')
 const helperCode = require('../helper/randomCode')
 

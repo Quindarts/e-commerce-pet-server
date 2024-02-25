@@ -16,13 +16,13 @@ const getAllProduct = async (req, res) => {
         return res.status(HTTP_STATUS.NOT_FOUND).json({
             success: false,
             status: HTTP_STATUS.NOT_FOUND,
-            message: 'No Product found.',
+            message: 'Get all list product not found.',
         })
     }
     res.status(HTTP_STATUS.OK).json({
         success: true,
-        status: HTTP_STATUS.CREATED,
-        message: 'Get product success.',
+        status: HTTP_STATUS.OK,
+        message: 'Get list product success.',
         list: listProduct,
         params: {
             limit: limit,

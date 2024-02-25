@@ -3,3 +3,4 @@ exports.ROLES = {
     Member: 'ROLE MEMBER',
     Merchant: 'ROLE MERCHANT',
 }
+

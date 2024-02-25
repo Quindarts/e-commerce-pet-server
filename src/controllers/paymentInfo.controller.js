@@ -1,10 +1,12 @@
-let express = require('express')
-let $ = require('jquery')
-const request = require('request')
 const moment = require('moment')
+const Order = require('../models/order.model')
+const User = require('../models/user.model')
+const Product = require('../models/product.model')
+const Cart = require('../models/cart.model')
+const { HTTP_STATUS } = require('../utils/constant')
 
 //[POST] CREATE PAYMENT
-const createPayment = async (req, res) => {
+const createPayment = async (req, res, amount, bankCode, language) => {
     process.env.TZ = 'Asia/Ho_Chi_Minh'
 
     let date = new Date()
@@ -22,10 +24,10 @@ const createPayment = async (req, res) => {
     let vnpUrl = config.get('vnp_Url')
     let returnUrl = config.get('vnp_ReturnUrl')
     let orderId = moment(date).format('DDHHmmss')
-    let amount = req.body.amount
-    let bankCode = req.body.bankCode
+    // let amount = req.body.amount
+    // let bankCode = req.body.bankCode
 
-    let locale = req.body.language
+    let locale = language
     if (locale === null || locale === '') {
         locale = 'vn'
     }
@@ -43,6 +45,7 @@ const createPayment = async (req, res) => {
     vnp_Params['vnp_ReturnUrl'] = returnUrl
     vnp_Params['vnp_IpAddr'] = ipAddr
     vnp_Params['vnp_CreateDate'] = createDate
+
     if (bankCode !== null && bankCode !== '') {
         vnp_Params['vnp_BankCode'] = bankCode
     }
@@ -57,25 +60,22 @@ const createPayment = async (req, res) => {
     vnp_Params['vnp_SecureHash'] = signed
     vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false })
 
-    res.status(200).json({
-        success: true,
-        vnpUrl: vnpUrl,
-    })
+    return vnpUrl
 }
 
 //[GET] RETURN PAYMENT STATUS
+// clear cart => change status order = express -> send order warehouse => select shipper to shipping
 const getPaymentSatus = async (req, res) => {
     let vnp_Params = req.query
     let secureHash = vnp_Params['vnp_SecureHash']
+
     delete vnp_Params['vnp_SecureHash']
     delete vnp_Params['vnp_SecureHashType']
 
     vnp_Params = sortObject(vnp_Params)
-
     let config = require('config')
     let tmnCode = config.get('vnp_TmnCode')
     let secretKey = config.get('vnp_HashSecret')
-
     let querystring = require('qs')
     let signData = querystring.stringify(vnp_Params, { encode: false })
     let crypto = require('crypto')
@@ -83,14 +83,15 @@ const getPaymentSatus = async (req, res) => {
     let signed = hmac.update(new Buffer(signData, 'utf-8')).digest('hex')
 
     if (secureHash === signed) {
-        res.status(200).json({
+        return res.status(HTTP_STATUS.OK).json({
             success: true,
+            status: HTTP_STATUS.OK,
             message: 'Payment success',
             vnp_TmnCode: tmnCode,
             code: vnp_Params['vnp_ResponseCode'],
         })
     } else {
-        res.status(200).json({
+        res.status(HTTP_STATUS.NOT_FOUND).json({
             success: false,
             message: 'Payment failed',
             code: '97',

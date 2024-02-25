@@ -12,8 +12,9 @@ const ROUTE = {
 
     //Category
     CATEGORY: '/categorys',
-    GET_CATEGORY_BY_ID: '/:category_id',
+    CATEGORY_BY_ID: '/:category_id',
     // DELETE_CATEGORY_BY_ID: '/:category_id',
+    CATEGORY_CHILD_BY_PATH_PARENT: '/children/:path',
 
     //Product
     PRODUCT: '/products',
@@ -38,5 +39,8 @@ const ROUTE = {
     CART: '/carts',
     CART_BY_USER_ID: '/:user_id',
     CART_UPDATE_BY_USER_ID: 'update/:user_id',
+
+    //Order
+    ORDER: '/orders',
 }
 module.exports = { ROUTE }

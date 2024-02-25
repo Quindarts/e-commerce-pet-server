@@ -20,11 +20,20 @@ const cartSchema = new mongoose.Schema(
                     required: true,
                 },
                 quantity: {
-                    type: Number,
+                    type: mongoose.Schema.Types.Number,
                     default: 1,
+                },
+                isActive: {
+                    type: mongoose.Schema.Types.Boolean,
+                    default: true,
                 },
             },
         ],
+        status: {
+            type: String,
+            enum: ['init', 'complete'],
+            default: 'init',
+        },
         dateUpdate: {
             type: mongoose.Schema.Types.Date,
             default: Date.now,
