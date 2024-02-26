@@ -33,4 +33,5 @@ const isActiveUser = async (req, res, next) => {
         console.log('🚀 ~ isActiveUser ~ error:', error)
     }
 }
+
 module.exports = { isActiveUser }

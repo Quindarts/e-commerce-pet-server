@@ -10,6 +10,7 @@ const {
     getListCategoryChildByPath,
     getRootCategory,
     getTreeCategory,
+    updateActiveCategory,
 } = require('../controllers/category.controller')
 const { ROUTE } = require('../utils/Routes')
 const {
@@ -32,7 +33,7 @@ router.get(ROUTE.CATEGORY_ROOT, getRootCategory)
 router.get(ROUTE.CATEGORY_TREE, getTreeCategory)
 
 //[ROUTE GET] /get-by-id/:id
-router.get(ROUTE.CATEGORY_BY_ID, getCategoryById)
+router.get(ROUTE.CATEGORY_BY_ID, isValidCategoryId, validate, getCategoryById)
 
 //[ROUTE POST]
 router.post(
@@ -46,6 +47,15 @@ router.post(
 //[ROUTE UPDATE]
 router.put(ROUTE.CATEGORY_BY_ID, isValidCategoryId, validate, updateCategory)
 
+//[ROUTE UPDATE ACTIVE]
+router.put(
+    ROUTE.CHANGE_ACTIVE_CATEGORY_BY_ID,
+    isValidCategoryId,
+    validate,
+    updateActiveCategory
+)
+
 //[ROUTE DELETE]
 router.delete(ROUTE.CATEGORY_BY_ID, isValidCategoryId, validate, deleteCategory)
+
 module.exports = router

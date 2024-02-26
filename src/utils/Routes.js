@@ -13,11 +13,11 @@ const ROUTE = {
     //Category
     CATEGORY: '/categorys',
     CATEGORY_BY_ID: '/:category_id',
-    // DELETE_CATEGORY_BY_ID: '/:category_id',
+    DELETE_CATEGORY_BY_ID: '/:category_id',
     CATEGORY_CHILD_BY_PATH_PARENT: '/children/:path',
     CATEGORY_ROOT: '/root_category',
     CATEGORY_TREE: '/tree_category',
-
+    CHANGE_ACTIVE_CATEGORY_BY_ID: '/:category_id/active',
     //Product
     PRODUCT: '/products',
     PRODUCT_BY_ID: '/:product_id',
