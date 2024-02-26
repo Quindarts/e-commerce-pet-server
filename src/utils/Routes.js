@@ -18,6 +18,8 @@ const ROUTE = {
     CATEGORY_ROOT: '/root_category',
     CATEGORY_TREE: '/tree_category',
     CHANGE_ACTIVE_CATEGORY_BY_ID: '/:category_id/active',
+    CATEGORY_QUERY: '/search',
+
     //Product
     PRODUCT: '/products',
     PRODUCT_BY_ID: '/:product_id',

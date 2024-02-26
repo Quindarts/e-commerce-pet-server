@@ -11,6 +11,7 @@ const {
     getRootCategory,
     getTreeCategory,
     updateActiveCategory,
+    getCategoryByQuery,
 } = require('../controllers/category.controller')
 const { ROUTE } = require('../utils/Routes')
 const {
@@ -20,8 +21,9 @@ const {
 } = require('../middlewares/category.validation')
 
 //[ROUTE GET] /get-all
+router.get(ROUTE.CATEGORY_QUERY, getCategoryByQuery)
+//[ROUTE GET] /get-all
 router.get('/', getAllCategory)
-
 //[ROUTE GET] /get-list-child-by-path
 router.get(ROUTE.CATEGORY_CHILD_BY_PATH_PARENT, getListCategoryChildByPath)
 

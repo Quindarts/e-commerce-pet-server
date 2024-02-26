@@ -62,7 +62,7 @@ const getListCategoryChildByPath = async (req, res) => {
         })
     }
 }
-
+//[HELPER GET ALL CHILD BY PARENT NODE]
 const getAllChildrenByParrentNode = async (parentNode) => {
     try {
         var regex = {
@@ -81,7 +81,7 @@ const getAllChildrenByParrentNode = async (parentNode) => {
     }
 }
 
-//[GET PRODUCT BY SEARCH] /?query
+//[GET LIST CATEOGRY BY QUERY] /?query
 const getCategoryByQuery = async (req, res) => {
     const { name, code, offset, limit, sortField, sortType } = Object.assign(
         {},
@@ -99,7 +99,6 @@ const getCategoryByQuery = async (req, res) => {
     }
     try {
         const list_category = await Category.find(regex)
-            .populate('category')
             .limit(limit)
             .skip((offset - 1) * limit)
             .sort({ [sortField]: sortType })
@@ -443,4 +442,5 @@ module.exports = {
     getRootCategory,
     getTreeCategory,
     updateActiveCategory,
+    getCategoryByQuery,
 }
