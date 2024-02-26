@@ -55,10 +55,15 @@ const getListCategoryChildByPath = async (req, res) => {
         })
     } catch (error) {
         console.log('🚀 ~ getListCategoryChildByPath ~ error:', error)
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to get List Category Child By Path.',
+        })
     }
 }
 
-const getAllChildernNodeByParentNode = async (parentNode) => {
+const getAllChildrenByParrentNode = async (parentNode) => {
     try {
         var regex = {
             path: {
@@ -72,10 +77,53 @@ const getAllChildernNodeByParentNode = async (parentNode) => {
 
         return child
     } catch (error) {
-        console.log('🚀 ~ getAllChildernNodeByParentNode ~ error:', error)
+        console.log('🚀 ~ getAllChildrenByParrentNode ~ error:', error)
     }
 }
 
+//[GET PRODUCT BY SEARCH] /?query
+const getCategoryByQuery = async (req, res) => {
+    const { name, code, offset, limit, sortField, sortType } = Object.assign(
+        {},
+        req.query
+    )
+    var regex = {
+        name: {
+            $regex: name ? name : '',
+            $options: 'i',
+        },
+        code: {
+            $regex: code ? code : '',
+            $options: 'i',
+        },
+    }
+    try {
+        const list_category = await Category.find(regex)
+            .populate('category')
+            .limit(limit)
+            .skip((offset - 1) * limit)
+            .sort({ [sortField]: sortType })
+            .sort({ createdAt: -1 })
+            .lean()
+
+        const total = await Category.find(regex).count()
+
+        res.status(HTTP_STATUS.OK).json({
+            success: true,
+            status: 200,
+            message: 'Search to Category by query success.',
+            total,
+            list_category,
+        })
+    } catch (error) {
+        console.log('🚀 ~ getCategoryByQuery ~ error:', error)
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to query Category.',
+        })
+    }
+}
 //[GET ROOT CATEGORY ]
 const getRootCategory = async (req, res) => {
     try {
@@ -99,20 +147,27 @@ const getRootCategory = async (req, res) => {
             })
         }
     } catch (error) {
-        console.log('🚀 ~ getTreeCategory ~ error:', error)
+        console.log('🚀 ~ getRootCategory ~ error:', error)
+
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to get Root Category category.',
+        })
     }
 }
 //[GET ALL TREE CATEGORY]
 const getTreeCategory = async (req, res) => {
     try {
-        var tree = []
         const nodeRoot = await Category.find({
             path: {
                 $regex: /^,index,/,
             },
+            isActive: true,
         })
             .sort({ path: 1 })
-            .select({ name: 1})
+            .select({ name: 1 })
+
         if (!nodeRoot) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
@@ -128,7 +183,7 @@ const getTreeCategory = async (req, res) => {
                     child: [],
                 }
 
-                const child = await getAllChildernNodeByParentNode(
+                const child = await getAllChildrenByParrentNode(
                     current_node.name
                 )
                 current_node.child = child
@@ -136,7 +191,7 @@ const getTreeCategory = async (req, res) => {
                 tree.push(current_node)
             }
             return res.status(HTTP_STATUS.OK).json({
-                success: false,
+                success: true,
                 status: HTTP_STATUS.OK,
                 message: 'Category found.',
                 tree,
@@ -144,6 +199,11 @@ const getTreeCategory = async (req, res) => {
         }
     } catch (error) {
         console.log('🚀 ~ getTreeCategory ~ error:', error)
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to get Tree Category category.',
+        })
     }
 }
 //[GET ALL CATEGORY]
@@ -238,6 +298,48 @@ const createCategory = async (req, res) => {
         })
     }
 }
+
+//[PUT] ACTIVE CATEGORY
+const updateActiveCategory = async (req, res) => {
+    const { category_id } = req.params
+
+    try {
+        const category_need = await Category.findById(category_id).lean()
+
+        if (!category_need) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                status: HTTP_STATUS.NOT_FOUND,
+                message: 'No category found.',
+            })
+        }
+
+        const result = await Category.findByIdAndUpdate(
+            { _id: category_id },
+            {
+                $set: {
+                    isActive: !category_need.isActive,
+                },
+            },
+            {
+                new: true,
+            }
+        )
+        res.status(HTTP_STATUS.CREATED).json({
+            success: true,
+            status: HTTP_STATUS.CREATED,
+            message: 'Update Category success.',
+            category: result,
+        })
+    } catch (error) {
+        console.log('🚀 ~ updateActiveCategory ~ error:', error)
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to update active category.',
+        })
+    }
+}
 //[PUT]
 const updateCategory = async (req, res) => {
     try {
@@ -254,7 +356,6 @@ const updateCategory = async (req, res) => {
                 message: 'This category already exists. ',
             })
         }
-
         const updateCategory = await Category.findByIdAndUpdate(
             {
                 _id: category_id,
@@ -289,6 +390,11 @@ const updateCategory = async (req, res) => {
             '🚀 ~ file: category.controller.js:120 ~ updateCategory ~ error:',
             error
         )
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to update category.',
+        })
     }
 }
 
@@ -297,17 +403,9 @@ const deleteCategory = async (req, res) => {
     try {
         const { category_id } = req.params
 
-        const unActiveCategory = await Category.findByIdAndUpdate(
-            {
-                _id: category_id,
-            },
-            {
-                $set: {
-                    isActive: false,
-                },
-            },
-            { new: true }
-        )
+        const deleteCategory = await Category.findOneAndDelete({
+            _id: category_id,
+        })
 
         if (!deleteCategory) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
@@ -317,18 +415,17 @@ const deleteCategory = async (req, res) => {
             })
         }
 
-        res.status(HTTP_STATUS.OK).json({
+        return res.status(HTTP_STATUS.OK).json({
             success: true,
             status: HTTP_STATUS.OK,
             message: 'Delete Category success.',
-            category: unActiveCategory,
         })
     } catch (err) {
         console.log(
             '🚀 ~ file: Category.controller.js:187 ~ deleteCategory ~ err:',
             err
         )
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
             message: 'Failed to delete Category.',
@@ -345,4 +442,5 @@ module.exports = {
     getListCategoryChildByPath,
     getRootCategory,
     getTreeCategory,
+    updateActiveCategory,
 }
