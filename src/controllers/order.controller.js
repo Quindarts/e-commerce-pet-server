@@ -171,7 +171,7 @@ const handleOrderByPaymentOnline = async (req, res) => {
                 bankCode,
                 language
             )
-            // console.log('🚀 ~ handleOrderByPaymentOnline ~ vpnUrl:', vpnUrl)
+            console.log('🚀 ~ handleOrderByPaymentOnline ~ vpnUrl:', vpnUrl)
 
             // if (!vpnUrl) {
             return res.status(HTTP_STATUS.OK).json({
