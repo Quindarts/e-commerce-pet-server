@@ -164,28 +164,29 @@ const handleOrderByPaymentOnline = async (req, res) => {
             }
         )
         if (resultChange) {
-            // const vpnUrl = await createPayment(
-            //     req,
-            //     res,
-            //     amount,
-            //     bankCode,
-            //     language
-            // )
+            const vpnUrl = await createPayment(
+                req,
+                res,
+                amount,
+                bankCode,
+                language
+            )
             // console.log('🚀 ~ handleOrderByPaymentOnline ~ vpnUrl:', vpnUrl)
 
             // if (!vpnUrl) {
-            //     return res.status(HTTP_STATUS.CONFLICT).json({
-            //         success: false,
-            //         status: HTTP_STATUS.NOT_FOUND,
-            //         message: 'Go to Payment failed. Please try again!',
-            //     })
-            // }
             return res.status(HTTP_STATUS.OK).json({
-                success: false,
+                success: true,
                 status: HTTP_STATUS.OK,
-                message: 'Order need to payment.',
-                order: resultChange,
+                message: 'Go to Payment failed. Please try again!',
+                vpnUrl: vpnUrl,
             })
+            // }
+            // return res.status(HTTP_STATUS.OK).json({
+            //     success: false,
+            //     status: HTTP_STATUS.OK,
+            //     message: 'Order need to payment.',
+            //     order: resultChange,
+            // })
             // vpnUrl: vpnUrl,
         }
     } catch (error) {
