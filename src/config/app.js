@@ -18,7 +18,9 @@ const appConfig = {
     vnp_HashSecret: 'QAPOBURMIIQRETSXAYEKPSURIRBGKTUY',
     vnp_Url: 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
     vnp_Api: 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction',
-    vnp_ReturnUrl: 'http://localhost:8888/order/vnpay_return',
+    vnp_ReturnUrl:
+        // 'http://localhost:8888/order/vnpay_return' ||
+        'https://e-commerce-pet-server.vercel.app/order/vnpay_return',
 }
 
 module.exports = { appConfig }

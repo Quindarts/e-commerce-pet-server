@@ -128,6 +128,10 @@ const handleOrderByPaymentOnline = async (req, res) => {
 
     try {
         const orderPayment = await Order.findById(order_id).lean()
+        console.log(
+            '🚀 ~ handleOrderByPaymentOnline ~ orderPayment:',
+            orderPayment
+        )
 
         if (!orderPayment) {
             return res.status(HTTP_STATUS.CONFLICT).json({
