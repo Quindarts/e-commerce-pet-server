@@ -128,8 +128,12 @@ const handleOrderByPaymentOnline = async (req, res) => {
 
     try {
         const orderPayment = await Order.findById(order_id).lean()
+        console.log(
+            '🚀 ~ handleOrderByPaymentOnline ~ orderPayment:',
+            orderPayment
+        )
 
-        if (!orderPayment || orderPayment.status !== STATUS_ORDER.UNPAID) {
+        if (!orderPayment || orderPayment.status !== STATUS_ORDER.PROCESSING) {
             return res.status(HTTP_STATUS.CONFLICT).json({
                 success: false,
                 status: HTTP_STATUS.CONFLICT,
