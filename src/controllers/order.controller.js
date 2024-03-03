@@ -128,18 +128,21 @@ const handleOrderByPaymentOnline = async (req, res) => {
 
     try {
         const orderPayment = await Order.findById(order_id).lean()
-        console.log(
-            '🚀 ~ handleOrderByPaymentOnline ~ orderPayment:',
-            orderPayment
-        )
 
-        if (!orderPayment || orderPayment.status !== STATUS_ORDER.PROCESSING) {
+        if (!orderPayment) {
             return res.status(HTTP_STATUS.CONFLICT).json({
                 success: false,
                 status: HTTP_STATUS.CONFLICT,
                 message: 'Change status order failed. No Order found',
             })
         } else {
+            if (orderPayment.status !== STATUS_ORDER.UNPAID) {
+                return res.status(HTTP_STATUS.CONFLICT).json({
+                    success: false,
+                    status: HTTP_STATUS.CONFLICT,
+                    message: 'Order status not found.',
+                })
+            }
             const resultChange = await Order.findOneAndUpdate(
                 {
                     _id: order_id,
@@ -167,7 +170,7 @@ const handleOrderByPaymentOnline = async (req, res) => {
                 if (!vpnUrl) {
                     return res.status(HTTP_STATUS.CONFLICT).json({
                         success: false,
-                        status: HTTP_STATUS.CONFLICT,
+                        status: HTTP_STATUS.NOT_FOUND,
                         message: 'Go to Payment failed. Please try again!',
                     })
                 }
@@ -182,6 +185,11 @@ const handleOrderByPaymentOnline = async (req, res) => {
         }
     } catch (error) {
         console.log('🚀 ~ handleOrderByPaymentOnline ~ error:', error)
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Payment order not working. Try again',
+        })
     }
 }
 
