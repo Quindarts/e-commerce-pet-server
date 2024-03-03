@@ -35,7 +35,7 @@ const createPayment = async (req, res, amount, bankCode, language) => {
     let vnp_Params = {}
     vnp_Params['vnp_Version'] = '2.1.0'
     vnp_Params['vnp_Command'] = 'pay'
-    vnp_Params['vnp_TmnCode'] = tmnCode
+    vnp_Params['vnp_TmnCode'] = 'PY5RFARW'
     vnp_Params['vnp_Locale'] = locale
     vnp_Params['vnp_CurrCode'] = currCode
     vnp_Params['vnp_TxnRef'] = orderId
@@ -87,7 +87,7 @@ const getPaymentSatus = async (req, res) => {
             success: true,
             status: HTTP_STATUS.OK,
             message: 'Payment success',
-            vnp_TmnCode: tmnCode,
+            vnp_TmnCode: 'PY5RFARW',
             code: vnp_Params['vnp_ResponseCode'],
         })
     } else {
