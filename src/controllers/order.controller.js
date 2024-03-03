@@ -133,59 +133,58 @@ const handleOrderByPaymentOnline = async (req, res) => {
             orderPayment
         )
 
-        if (!orderPayment) {
-            return res.status(HTTP_STATUS.CONFLICT).json({
-                success: false,
-                status: HTTP_STATUS.CONFLICT,
-                message: 'Change status order failed. No Order found',
-            })
-        } else {
-            if (orderPayment.status !== STATUS_ORDER.UNPAID) {
+        // if (!orderPayment) {
+        //     return res.status(HTTP_STATUS.CONFLICT).json({
+        //         success: false,
+        //         status: HTTP_STATUS.CONFLICT,
+        //         message: 'Change status order failed. No Order found',
+        //     })
+        // }
+        // if (orderPayment.status !== STATUS_ORDER.UNPAID) {
+        //     return res.status(HTTP_STATUS.CONFLICT).json({
+        //         success: false,
+        //         status: HTTP_STATUS.CONFLICT,
+        //         message: 'Order status not found.',
+        //     })
+        // }
+        const resultChange = await Order.findOneAndUpdate(
+            {
+                _id: order_id,
+            },
+            {
+                $set: {
+                    status: STATUS_ORDER.PROCESSING,
+                },
+                $pull: {
+                    paymentMethod: PAYMENT_METHOD.ONLINE,
+                },
+            },
+            {
+                new: true,
+            }
+        )
+        if (resultChange) {
+            const vpnUrl = await createPayment(
+                req,
+                res,
+                amount,
+                bankCode,
+                language
+            )
+            if (!vpnUrl) {
                 return res.status(HTTP_STATUS.CONFLICT).json({
                     success: false,
-                    status: HTTP_STATUS.CONFLICT,
-                    message: 'Order status not found.',
+                    status: HTTP_STATUS.NOT_FOUND,
+                    message: 'Go to Payment failed. Please try again!',
                 })
             }
-            const resultChange = await Order.findOneAndUpdate(
-                {
-                    _id: order_id,
-                },
-                {
-                    $set: {
-                        status: STATUS_ORDER.PROCESSING,
-                    },
-                    $pull: {
-                        paymentMethod: PAYMENT_METHOD.ONLINE,
-                    },
-                },
-                {
-                    new: true,
-                }
-            )
-            if (resultChange) {
-                const vpnUrl = await createPayment(
-                    req,
-                    res,
-                    amount,
-                    bankCode,
-                    language
-                )
-                if (!vpnUrl) {
-                    return res.status(HTTP_STATUS.CONFLICT).json({
-                        success: false,
-                        status: HTTP_STATUS.NOT_FOUND,
-                        message: 'Go to Payment failed. Please try again!',
-                    })
-                }
-                return res.status(HTTP_STATUS.OK).json({
-                    success: false,
-                    status: HTTP_STATUS.OK,
-                    message: 'Order need to payment.',
-                    vpnUrl: vpnUrl,
-                    order: resultChange,
-                })
-            }
+            return res.status(HTTP_STATUS.OK).json({
+                success: false,
+                status: HTTP_STATUS.OK,
+                message: 'Order need to payment.',
+                vpnUrl: vpnUrl,
+                order: resultChange,
+            })
         }
     } catch (error) {
         console.log('🚀 ~ handleOrderByPaymentOnline ~ error:', error)
