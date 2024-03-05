@@ -253,22 +253,22 @@ const updateProduct = async (req, res) => {
         '🚀 ~ file: product.controller.js:137 ~ updateProduct ~ product_id:',
         product_id
     )
-    try {
-        const {
-            name,
-            images,
-            price,
-            avaiable,
-            description,
-            tags,
-            brand,
-            dimensions,
-            category,
-            attribute_product,
-            provider,
-            isActive,
-        } = req.body
 
+    const {
+        name,
+        images,
+        price,
+        avaiable,
+        description,
+        tags,
+        brand,
+        dimensions,
+        category,
+        attribute_product,
+        provider,
+        isActive,
+    } = req.body
+    try {
         const oldProduct = await Product.findOne({
             _id: product_id,
         })
@@ -280,29 +280,29 @@ const updateProduct = async (req, res) => {
             })
         }
 
-        const updateProduct = await Product.findByIdAndUpdate(
+        const resultUpdate = await Product.findByIdAndUpdate(
             {
                 _id: product_id,
             },
             {
                 $set: {
-                    name,
-                    images,
+                    name: name,
+                    images: images,
                     price,
-                    avaiable,
-                    description,
-                    attribute_product,
-                    tags,
-                    brand,
-                    dimensions,
-                    category,
-                    provider,
-                    isActive,
+                    avaiable: avaiable,
+                    description: description,
+                    attribute_product: attribute_product,
+                    tags: tags,
+                    brand: brand,
+                    dimensions: dimensions,
+                    category: category,
+                    provider: provider,
+                    isActive: isActive,
                 },
             },
             { new: true }
         )
-        if (!updateProduct) {
+        if (!resultUpdate) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
                 success: false,
                 status: HTTP_STATUS.BAD_REQUEST,
@@ -313,7 +313,7 @@ const updateProduct = async (req, res) => {
             success: true,
             status: HTTP_STATUS.CREATED,
             message: 'Update Product success.',
-            product: updateProduct,
+            product: resultUpdate,
         })
     } catch (error) {
         console.log(

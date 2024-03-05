@@ -36,7 +36,7 @@ router.get(ROUTE.PRODUCT_BY_ID, getProductByID)
 router.post('/', createProduct)
 
 //[ROUTE UPDATE]
-router.put(ROUTE.PRODUCT_BY_ID, isValidIdBodyAndQuery, validate, updateProduct)
+router.put(ROUTE.PRODUCT_BY_ID, updateProduct)
 
 //[ROUTE DELETE]
 router.put(ROUTE.PRODUCT_CHANGE_STATUS, deleteProduct)
