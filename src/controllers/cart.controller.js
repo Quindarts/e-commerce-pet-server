@@ -36,9 +36,9 @@ const getCartByUserId = async (req, res) => {
         const { user_id } = req
         const cart = await Cart.findOne({ _id: user_id }).lean()
         if (!cart) {
-            return res.status(HTTP_STATUS.CONFLICT).json({
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
-                status: HTTP_STATUS.CONFLICT,
+                status: HTTP_STATUS.NOT_FOUND,
                 message: 'Get cart failed.',
             })
         }
@@ -90,28 +90,21 @@ const createCart = async (req, res) => {
         })
     }
 }
-//[PUT] TOGGLE PRODUCT CART
-// const toggleProductCart = async (req, res) => {
-//     const { product_id, cart_id, quantity } = req.body
-//     try {
-//         const product = Product.findById({ product_id }).lean()
-
-//         const productItem = await Cart.findOne({
-//             _id: user_id,
-//             'cart_details.product_id': product_id,
-//         })
-
-//         if (!product) {
-//             return res.status(HTTP_STATUS.NOT_FOUND).json({
-//                 success: false,
-//                 status: HTTP_STATUS.NOT_FOUND,
-//                 message: 'No product found.',
-//             })
-//         }
-//     } catch (error) {
-//         console.log('🚀 ~ toggleProductCart ~ error:', error)
-//     }
-// }
+//[HELPER]
+const checkProductItemCartAvaiable = async (
+    quantity_product_in_cart,
+    product_id
+) => {
+    try {
+        const productItem = await Product.findById({
+            _id: product_id,
+        }).lean()
+        var avaiable = productItem.avaiable
+        return quantity_product_in_cart <= avaiable
+    } catch (error) {
+        console.log('🚀 ~ toggleProductCart ~ error:', error)
+    }
+}
 //[PUT] UPDATE CART BY USER_ID
 const updateCart = async (req, res) => {
     try {
@@ -167,10 +160,65 @@ const resetCart = async (req, res) => {
         })
     }
 }
+//[PUT] UPDATE CART BY PRODUCT ID
+const updateCartByProductID = async (req, res) => {
+    const { user_id, product_id } = req.params
+    const { quantity } = req.body
+    try {
+        const cart = await Cart.findOne({
+            _id: user_id,
+            'cart_details.product_id': product_id,
+        })
+        if (!cart) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                status: HTTP_STATUS.NOT_FOUND,
+                message: 'No cart user found.',
+            })
+        }
+        const checkedAvaiable = await checkProductItemCartAvaiable(
+            quantity,
+            product_id
+        )
+        console.log(
+            '🚀 ~ updateCartByProductID ~ checkedAvaiable:',
+            checkedAvaiable
+        )
+        if (!checkedAvaiable) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                status: HTTP_STATUS.NOT_FOUND,
+                message: 'Product not avaiable',
+            })
+        }
+        const resultUpdate = await Cart.findOneAndUpdate(
+            {
+                _id: user_id,
+                'cart_details.product_id': product_id,
+            },
+            { $set: { 'cart_details.0.quantity': quantity } },
+            { new: true }
+        )
+        res.status(HTTP_STATUS.CREATED).json({
+            success: true,
+            status: HTTP_STATUS.CREATED,
+            message: 'Update Cart by Product id success.',
+            cart: resultUpdate,
+        })
+    } catch (error) {
+        console.log('🚀 ~ updateCartByProductID ~ error:', error)
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to update cart.',
+        })
+    }
+}
 module.exports = {
     getAllCart,
     getCartByUserId,
     createCart,
     updateCart,
     resetCart,
+    updateCartByProductID,
 }
