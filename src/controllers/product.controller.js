@@ -276,7 +276,7 @@ const updateProduct = async (req, res) => {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
                 status: HTTP_STATUS.NOT_FOUND,
-                message: 'This Product already exists. ',
+                message: 'No product found, please try again. ',
             })
         }
 
