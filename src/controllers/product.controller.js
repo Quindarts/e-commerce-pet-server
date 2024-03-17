@@ -97,29 +97,61 @@ const getProductByQuery = async (req, res) => {
         })
     }
 }
+//[GET PRODUCTSHOP]
+//url/shop/keyword&&limit=&&offset=&&minPrice=&&maxPrice&&color=&&brand=sortField=sortType
 
 //[FILTER PRODUCT ]
 const filterProduct = async (req, res) => {
+    console.log('heee')
     const { offset, limit, sortField, sortType } = Object.assign({}, req.query)
 
-    const { category_id, brand, discount, rating } = Object.assign(
-        {},
-        req.query
-    )
+    const {
+        category_id,
+        brand,
+        distancePrice,
+        color,
+        tags,
+        keywords,
+        searchType,
+    } = Object.assign({}, req.query)
     var query = {}
+    if (distancePrice !== '' && distancePrice !== undefined) {
+        query['price'] = {
+            $gte: parseInt(distancePrice.split(',')[0]),
+            $lte: parseInt(distancePrice.split(',')[1]),
+        }
+    }
+    if (
+        keywords !== '' &&
+        searchType !== '' &&
+        keywords !== undefined &&
+        searchType !== undefined
+    ) {
+        query[searchType] = {
+            $regex: keywords ? keywords : '',
+            $options: 'i',
+        }
+    }
+    if (category_id !== undefined && category_id !== '')
+        query['category'] = category_id
 
-    if (category_id !== undefined) query['category'] = categoryId
-    if (brand !== undefined) {
+    if (color !== undefined && color !== '') {
+        const colorArr = color.split(',')
+        query['color'] = { $in: colorArr }
+    }
+    if (tags !== undefined && tags !== '') {
+        const tagsArr = tags.split(',')
+        query['tags'] = { $in: tagsArr }
+    }
+    if (brand !== undefined && brand !== '') {
         const brandArr = brand.split(',')
         query['brand'] = { $in: brandArr }
     }
-    if (discount !== undefined) query['discount'] = { $lt: discount }
-    if (rating !== undefined) query['avg_review'] = { $lt: rating }
 
     try {
+        console.log('🚀 ~ filterProduct ~ query:', query)
         const products = await Product.find(query)
             .populate('category')
-
             .limit(limit)
             .skip((offset - 1) * limit)
             .sort({ [sortField]: sortType })
