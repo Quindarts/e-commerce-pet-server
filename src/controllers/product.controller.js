@@ -99,7 +99,6 @@ const getProductByQuery = async (req, res) => {
 }
 //[GET PRODUCTSHOP]
 //url/shop/keyword&&limit=&&offset=&&minPrice=&&maxPrice&&color=&&brand=sortField=sortType
-
 //[FILTER PRODUCT ]
 const filterProduct = async (req, res) => {
     console.log('heee')
@@ -183,7 +182,9 @@ const getProductByID = async (req, res) => {
     try {
         const product = await Product.findOne({
             _id: product_id,
-        }).lean()
+        })
+            .populate('category')
+            .lean()
 
         if (!product) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({

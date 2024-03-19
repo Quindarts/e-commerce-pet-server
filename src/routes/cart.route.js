@@ -25,10 +25,35 @@ const router = express.Router()
 router.get('/', getAllCart)
 
 //[GET CART BY USER ID]
-router.get(ROUTE.CART_BY_USER_ID, isExpiredToken, isActiveUser, getCartByUserId)
+router.get(
+    ROUTE.CART_BY_USER_ID,
+
+    // isExpiredToken, isActiveUser,
+
+    getCartByUserId
+)
 
 //[CREATE CART BY USER ID]
-router.post(ROUTE.CART_BY_USER_ID, isExpiredToken, isActiveUser, createCart)
+router.post(
+    ROUTE.CART_BY_USER_ID,
+
+    // isExpiredToken, isActiveUser,
+    createCart
+)
+
+// [UPDATE CART BY USER ID]
+router.put(
+    ROUTE.CART_BY_USER_ID,
+    isValidProductIdCart,
+    isValidStockProductCart,
+    isValidPriceProductCart,
+    isValidWeightProductCart,
+    isValidQuantityProductCart,
+    // isExpiredToken,
+    // isActiveUser,
+    validate,
+    updateCart
+)
 
 router.put(
     ROUTE.CART_UPDATE_BY_PRODUCT_ID,
@@ -37,21 +62,12 @@ router.put(
     // validate,
     updateCartByProductID
 )
-//[UPDATE CART BY USER ID]
-// router.put(
-//     ROUTE.CART_BY_USER_ID,
-//     isValidProductIdCart,
-//     isValidStockProductCart,
-//     isValidPriceProductCart,
-//     isValidWeightProductCart,
-//     isValidQuantityProductCart,
-//     isExpiredToken,
-//     isActiveUser,
-//     validate,
-//     updateCart
-// )
 
 //[RESET CART BY USER ID]
-router.delete(ROUTE.CART_BY_USER_ID, isExpiredToken, isActiveUser, resetCart)
+router.delete(
+    ROUTE.CART_BY_USER_ID,
+    // isExpiredToken, isActiveUser,
+    resetCart
+)
 
 module.exports = router

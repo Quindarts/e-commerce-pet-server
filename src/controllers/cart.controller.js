@@ -2,6 +2,7 @@ const Cart = require('../models/cart.model')
 const User = require('../models/user.model')
 const Product = require('../models/product.model')
 const { HTTP_STATUS } = require('../utils/constant')
+const { ObjectId } = require('mongodb')
 
 //[GET] GET ALL LIST CART
 const getAllCart = async (req, res) => {
@@ -33,8 +34,10 @@ const getAllCart = async (req, res) => {
 //[GET] BY USER ID
 const getCartByUserId = async (req, res) => {
     try {
-        const { user_id } = req
+        const { user_id } = req.params
+        console.log('🚀 ~ getCartByUserId ~ user_id:', user_id)
         const cart = await Cart.findOne({ _id: user_id }).lean()
+        console.log('🚀 ~ getCartByUserId ~ cart:', cart)
         if (!cart) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
@@ -108,11 +111,11 @@ const checkProductItemCartAvaiable = async (
 //[PUT] UPDATE CART BY USER_ID
 const updateCart = async (req, res) => {
     try {
-        const user_id = req.user_id
-        const { cart_details } = req.body
-        const cart = await Cart.findById({ user_id }).lean()
+        const { user_id } = req.params
 
-        const updateCart = await Cart.findByIdAndUpdate(
+        const { cart_details } = req.body
+
+        const updateCart = await Cart.findOneAndUpdate(
             {
                 _id: user_id,
             },
@@ -124,15 +127,15 @@ const updateCart = async (req, res) => {
         return res.status(HTTP_STATUS.CREATED).json({
             success: true,
             status: HTTP_STATUS.CREATED,
-            message: 'Create new Cart success.',
-            updateCart,
+            message: 'Update Cart success.',
+            cart: updateCart,
         })
     } catch (error) {
         console.log('🚀 ~ createCart ~ error:', error)
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-            message: 'Failed to create new cart.',
+            message: 'Failed to update cart.',
         })
     }
 }
