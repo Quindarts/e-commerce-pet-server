@@ -1,3 +1,4 @@
+const { toInteger } = require('lodash')
 const { generateProductCode } = require('../helper/randomCode')
 const Product = require('../models/product.model')
 const { HTTP_STATUS } = require('../utils/constant')
@@ -5,6 +6,7 @@ const { HTTP_STATUS } = require('../utils/constant')
 //[GET LIST PRODUCT BY PARAMS ] /get-all-product?params
 const getAllProduct = async (req, res) => {
     const { limit, offset } = Object.assign({}, req.query)
+    console.log('🚀 ~ getAllProduct ~ limit:', typeof limit)
     var listProduct = await Product.find()
         .populate('category')
         .limit(limit)
@@ -19,6 +21,8 @@ const getAllProduct = async (req, res) => {
             message: 'Get all list product not found.',
         })
     }
+    const totalPage = await Product.find().count()
+    console.log(totalPage)
     res.status(HTTP_STATUS.OK).json({
         success: true,
         status: HTTP_STATUS.OK,
@@ -27,6 +31,7 @@ const getAllProduct = async (req, res) => {
         params: {
             limit: limit,
             page: offset,
+            totalPage: `${parseInt(totalPage / toInteger(limit)) + 1}`,
         },
     })
 }

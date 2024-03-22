@@ -27,9 +27,7 @@ router.get('/', getAllCart)
 //[GET CART BY USER ID]
 router.get(
     ROUTE.CART_BY_USER_ID,
-
     // isExpiredToken, isActiveUser,
-
     getCartByUserId
 )
 
