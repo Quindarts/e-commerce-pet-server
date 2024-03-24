@@ -19,6 +19,7 @@ const {
     isValidUserId,
 } = require('../middlewares/cart.validations')
 const { validate } = require('../middlewares/validation')
+const { isNotExitsProductInCart } = require('../handler/cart.handler')
 const router = express.Router()
 
 //[GET ALL]
@@ -42,17 +43,18 @@ router.post(
 // [UPDATE CART BY USER ID]
 router.put(
     ROUTE.CART_BY_USER_ID,
-    isValidProductIdCart,
-    isValidStockProductCart,
-    isValidPriceProductCart,
-    isValidWeightProductCart,
-    isValidQuantityProductCart,
+    // isValidProductIdCart,
+    // isValidStockProductCart,
+    // isValidPriceProductCart,
+    // isValidWeightProductCart,
+    // isValidQuantityProductCart,
+    isNotExitsProductInCart,
     // isExpiredToken,
     // isActiveUser,
-    validate,
+    // validate,
     updateCart
 )
-
+//[UPDATE CART BY PRODUCT ID]
 router.put(
     ROUTE.CART_UPDATE_BY_PRODUCT_ID,
     // isExpiredToken,
