@@ -7,6 +7,7 @@ const {
     updateCart,
     resetCart,
     updateCartByProductID,
+    deleteProductInCartByProductId,
 } = require('../controllers/cart.controller')
 const { isActiveUser } = require('../handler/user.handler')
 const { isExpiredToken } = require('../handler/token.handler')
@@ -61,6 +62,15 @@ router.put(
     // isActiveUser,
     // validate,
     updateCartByProductID
+)
+//[DELETE CART BY PRODUCT ID]
+
+router.delete(
+    ROUTE.CART_UPDATE_BY_PRODUCT_ID,
+    // isExpiredToken,
+    // isActiveUser,
+    // validate,
+    deleteProductInCartByProductId
 )
 
 //[RESET CART BY USER ID]

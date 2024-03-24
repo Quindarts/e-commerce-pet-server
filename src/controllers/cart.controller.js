@@ -3,6 +3,7 @@ const User = require('../models/user.model')
 const Product = require('../models/product.model')
 const { HTTP_STATUS } = require('../utils/constant')
 const { ObjectId } = require('mongodb')
+const { default: mongoose } = require('mongoose')
 
 //[GET] GET ALL LIST CART
 const getAllCart = async (req, res) => {
@@ -78,6 +79,7 @@ const createCart = async (req, res) => {
             _id: user_id,
             cart_details: [],
         })
+
         return res.status(HTTP_STATUS.CREATED).json({
             success: true,
             status: HTTP_STATUS.CREATED,
@@ -106,6 +108,35 @@ const checkProductItemCartAvaiable = async (
         return quantity_product_in_cart <= avaiable
     } catch (error) {
         console.log('🚀 ~ toggleProductCart ~ error:', error)
+    }
+}
+//[HELPER]
+const getProductNeedInCart = async (product_id) => {
+    try {
+        const productList = await Cart.aggregate([
+            {
+                $unwind: '$cart_details',
+            },
+            {
+                $group: {
+                    _id: null,
+                    product_ids: { $addToSet: '$cart_details.product_id' },
+                },
+            },
+            {
+                $unwind: '$product_ids',
+            },
+            {
+                $sort: { product_ids: 1 },
+            },
+        ])
+        var result
+        productList.forEach((pr, index) => {
+            if (pr['product_ids'].toString() === product_id) result = index
+        })
+        return result
+    } catch (error) {
+        console.log('🚀 ~ getIndexByProductId ~ error:', error)
     }
 }
 
@@ -164,6 +195,44 @@ const resetCart = async (req, res) => {
         })
     }
 }
+//[DELETE] DELETE PRODUCT IN CART
+const deleteProductInCartByProductId = async (req, res) => {
+    const { user_id, product_id } = req.params
+    try {
+        const cart = await Cart.findOne({
+            _id: user_id,
+            'cart_details.product_id': product_id,
+        })
+        if (!cart) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                status: HTTP_STATUS.NOT_FOUND,
+                message: 'No cart user found.',
+            })
+        }
+        const resultDelete = await Cart.findOneAndUpdate(
+            {
+                _id: user_id,
+                'cart_details.product_id': product_id,
+            },
+            { $pull: { cart_details: { product_id: product_id } } },
+            { new: true }
+        )
+        res.status(HTTP_STATUS.CREATED).json({
+            success: true,
+            status: HTTP_STATUS.CREATED,
+            message: 'Delete Cart by Product id success.',
+            cart: resultDelete,
+        })
+    } catch (error) {
+        console.log('🚀 ~ updateCartByProductID ~ error:', error)
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to delete product in cart.',
+        })
+    }
+}
 //[PUT] UPDATE CART BY PRODUCT ID
 const updateCartByProductID = async (req, res) => {
     const { user_id, product_id } = req.params
@@ -184,10 +253,6 @@ const updateCartByProductID = async (req, res) => {
             quantity,
             product_id
         )
-        console.log(
-            '🚀 ~ updateCartByProductID ~ checkedAvaiable:',
-            checkedAvaiable
-        )
         if (!checkedAvaiable) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
@@ -195,15 +260,26 @@ const updateCartByProductID = async (req, res) => {
                 message: 'Product not avaiable',
             })
         }
+
+        var productUpdate = await getProductNeedInCart(product_id)
+        console.log(
+            '🚀 ~ updateCartByProductID ~ productUpdate:',
+            productUpdate
+        )
+
+        var setValue = `cart_details.${productUpdate}.quantity`
+        var kv = {}
+        kv[setValue] = quantity
+
         const resultUpdate = await Cart.findOneAndUpdate(
             {
                 _id: user_id,
                 'cart_details.product_id': product_id,
             },
-            { $set: { 'cart_details.0.quantity': quantity } },
+            { $set: kv },
             { new: true }
         )
-        res.status(HTTP_STATUS.CREATED).json({
+        return res.status(HTTP_STATUS.CREATED).json({
             success: true,
             status: HTTP_STATUS.CREATED,
             message: 'Update Cart by Product id success.',
@@ -225,4 +301,5 @@ module.exports = {
     updateCart,
     resetCart,
     updateCartByProductID,
+    deleteProductInCartByProductId,
 }
