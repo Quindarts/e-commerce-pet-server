@@ -162,13 +162,17 @@ const filterProduct = async (req, res) => {
             .sort({ createdAt: -1 })
             .lean()
 
-        const totalRows = await Product.find(query).count()
+        const totalPage = await Product.find(query).count()
 
         res.status(HTTP_STATUS.OK).json({
             success: true,
             status: HTTP_STATUS.OK,
-            totalRows,
             products,
+            params: {
+                limit: limit,
+                page: offset,
+                totalPage: `${parseInt(totalPage / toInteger(limit)) + 1}`,
+            },
         })
     } catch (error) {
         console.log('🚀 ~ filterProduct ~ error:', error)
