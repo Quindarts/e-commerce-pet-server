@@ -44,6 +44,7 @@ const ROUTE = {
     CART_BY_USER_ID: '/:user_id',
     CART_UPDATE_BY_USER_ID: '/:user_id/update',
     CART_UPDATE_BY_PRODUCT_ID: '/:user_id/change/:product_id',
+    // CART_UPDATE_BY_PRODUCT_ID: '/:user_id/product/:product_id',
 
     //Order
     ORDER: '/orders',

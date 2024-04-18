@@ -233,6 +233,97 @@ const deleteProductInCartByProductId = async (req, res) => {
         })
     }
 }
+
+//[POST] ADD NEW PRODUCT TO CART
+const addProductToCart = async (req, res) => {
+    const { product_id, quantity } = req.body
+    const { user_id } = req.params
+    try {
+        let new_quantity = quantity
+
+        const cart = await Cart.findOne({
+            _id: user_id,
+        })
+        if (!cart) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                status: HTTP_STATUS.NOT_FOUND,
+                message: 'No cart user found.',
+            })
+        }
+        const cart_details = cart.cart_details
+        let isProductInCart = false
+
+        cart_details.map((item) => {
+            console.log(item)
+            if (item.product_id == product_id) {
+                new_quantity += item.quantity
+                isProductInCart = true
+            }
+        })
+        var checkedAvaiable = await checkProductItemCartAvaiable(
+            new_quantity,
+            product_id
+        )
+        if (!checkedAvaiable) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                status: HTTP_STATUS.NOT_FOUND,
+                message: 'Product not avaiable',
+            })
+        } else {
+            if (isProductInCart) {
+                var productUpdate = await getProductNeedInCart(product_id)
+                var setValue = `cart_details.${productUpdate}.quantity`
+                var kv = {}
+                kv[setValue] = new_quantity
+                const resultUpdate = await Cart.findOneAndUpdate(
+                    {
+                        _id: user_id,
+                        'cart_details.product_id': product_id,
+                    },
+                    { $set: kv },
+                    { new: true }
+                )
+                return res.status(HTTP_STATUS.CREATED).json({
+                    success: true,
+                    status: HTTP_STATUS.CREATED,
+                    message: 'Update Cart by Product id success.',
+                    cart: resultUpdate,
+                })
+            } else {
+                const resultUpdate = await Cart.findOneAndUpdate(
+                    {
+                        _id: user_id,
+                    },
+                    {
+                        $push: {
+                            cart_details: {
+                                product_id: product_id,
+                                quantity: new_quantity,
+                            },
+                        },
+                    },
+                    { new: true }
+                )
+                return res.status(HTTP_STATUS.CREATED).json({
+                    success: true,
+                    status: HTTP_STATUS.CREATED,
+                    message: 'Update Cart by Product id success.',
+                    cart: resultUpdate,
+                })
+            }
+        }
+    } catch (error) {
+        console.log('🚀 ~ addProductToCart ~ error:', error)
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to add product in cart.',
+        })
+    }
+}
+
 //[PUT] UPDATE CART BY PRODUCT ID
 const updateCartByProductID = async (req, res) => {
     const { user_id, product_id } = req.params
@@ -262,10 +353,6 @@ const updateCartByProductID = async (req, res) => {
         }
 
         var productUpdate = await getProductNeedInCart(product_id)
-        console.log(
-            '🚀 ~ updateCartByProductID ~ productUpdate:',
-            productUpdate
-        )
 
         var setValue = `cart_details.${productUpdate}.quantity`
         var kv = {}
@@ -299,6 +386,7 @@ module.exports = {
     getCartByUserId,
     createCart,
     updateCart,
+    addProductToCart,
     resetCart,
     updateCartByProductID,
     deleteProductInCartByProductId,
