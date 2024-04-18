@@ -13,6 +13,61 @@ const {
 const { generateOrderCode } = require('../helper/randomCode')
 const { createPayment } = require('./paymentInfo.controller')
 
+//[GET ORDER BY ID ]
+const getOrderById = async (req, res) => {
+    const { _id } = req.params
+    try {
+        const order = await Order.findById(_id).populate(
+            'shipping_detail.address'
+        )
+
+        if (!order) {
+            res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                status: HTTP_STATUS.NOT_FOUND,
+                message: 'Get order by id not found.',
+            })
+        }
+        res.status(HTTP_STATUS.OK).json({
+            success: true,
+            status: HTTP_STATUS.OK,
+            message: 'Get order by id success.',
+            order,
+        })
+    } catch (error) {
+        console.log('🚀 ~ getOrderById ~ error:', error)
+    }
+}
+//[GET BY USER ID]
+const getOrderByUserId = async (req, res) => {
+    const { user_id } = req.params
+    try {
+        const order = await Order.find({ user_id: user_id }).populate(
+            'shipping_detail.address'
+        )
+        if (!order) {
+            res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                status: HTTP_STATUS.NOT_FOUND,
+                message: 'Get order by user id not found.',
+            })
+        }
+        res.status(HTTP_STATUS.NOT_FOUND).json({
+            success: false,
+            status: HTTP_STATUS.OK,
+            message: 'Get order by user id success.',
+            order,
+        })
+    } catch (error) {
+        console.log('🚀 ~ getOrderByUserId ~ error:', error)
+
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Get order by user id failder, try again',
+        })
+    }
+}
 //[GET ALL BY PARAMS]
 const getAllOrderByParams = async (req, res) => {
     const { limit, offset } = req.params
@@ -42,6 +97,11 @@ const getAllOrderByParams = async (req, res) => {
         })
     } catch (error) {
         console.log('🚀 ~ getAllOrderByParams ~ error:', error)
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Get all order failder, try again.',
+        })
     }
 }
 
@@ -211,4 +271,6 @@ module.exports = {
     createOrderByCartUser,
     handleOrderByPaymentOnline,
     getAllOrderByParams,
+    getOrderByUserId,
+    getOrderById,
 }

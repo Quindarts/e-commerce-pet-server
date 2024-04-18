@@ -6,7 +6,6 @@ const { HTTP_STATUS } = require('../utils/constant')
 //[GET LIST PRODUCT BY PARAMS ] /get-all-product?params
 const getAllProduct = async (req, res) => {
     const { limit, offset } = Object.assign({}, req.query)
-    console.log('🚀 ~ getAllProduct ~ limit:', typeof limit)
     var listProduct = await Product.find()
         .populate('category')
         .limit(limit)
