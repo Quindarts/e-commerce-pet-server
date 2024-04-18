@@ -1,5 +1,6 @@
 const Order = require('../models/order.model')
 const Cart = require('../models/cart.model')
+const User = require('../models/user.model')
 const OrderDetail = require('../models/orderDetail.model')
 const Product = require('../models/product.model')
 const {
@@ -15,7 +16,7 @@ const { createPayment } = require('./paymentInfo.controller')
 const getAllOrderByParams = async (req, res) => {
     const { limit, offset } = req.params
     try {
-        const listOrder = Order.find()
+        const listOrder = await Order.find()
             .limit(limit)
             .skip((offset - 1) * limit)
             .sort({ createdAt: -1 })
@@ -46,6 +47,7 @@ const getAllOrderByParams = async (req, res) => {
 //[POST] CREATE ORDER
 const createOrderByCartUser = async (req, res) => {
     const { user_id, shipping_detail } = req.body
+
     const code = generateOrderCode(6)
 
     try {
