@@ -38,6 +38,8 @@ const ROUTE = {
     USER: '/users',
     USER_BY_ID: '/:user_id',
     USER_CHANGE_ACTIVE: '/change_active/:user_id',
+    USER_BY_NAME: '/search_user/:username',
+    USER_FILTER: '/filter',
 
     //Cart
     CART: '/carts',
