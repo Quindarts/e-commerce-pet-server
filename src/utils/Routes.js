@@ -49,6 +49,7 @@ const ROUTE = {
     //Order
     ORDER: '/orders',
     ORDER_BY_ID: '/:_id',
+    ORDER_BY_PARAMS: '/params',
     ORDER_BY_USER_ID: '/:user_id',
     ORDER_BY_ID_CREATE_PAYMENT_ONLINE: '/:order_id/payment_online',
 }

@@ -11,7 +11,7 @@ const { ROUTE } = require('../utils/Routes')
 const router = express.Router()
 
 //[GET BY PARAMS]
-router.get('/', getAllOrderByParams)
+router.get(ROUTE.ORDER_BY_PARAMS, getAllOrderByParams)
 
 //[GET BY ORDER ID]
 router.get(ROUTE.ORDER_BY_ID, getOrderById)
