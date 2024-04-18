@@ -2,6 +2,7 @@ const Order = require('../models/order.model')
 const Cart = require('../models/cart.model')
 const User = require('../models/user.model')
 const OrderDetail = require('../models/orderDetail.model')
+const Address = require('../models/address.model')
 const Product = require('../models/product.model')
 const {
     HTTP_STATUS,
@@ -47,7 +48,7 @@ const getAllOrderByParams = async (req, res) => {
 //[POST] CREATE ORDER
 const createOrderByCartUser = async (req, res) => {
     const { user_id, shipping_detail } = req.body
-
+    const address = Object.assign({}, shipping_detail.address)
     const code = generateOrderCode(6)
 
     try {
@@ -75,7 +76,7 @@ const createOrderByCartUser = async (req, res) => {
                 })
                 totalItem += detail['quantity'] * product['price']
             }
-
+            const newAddress = await Address.create(address, { new: true })
             const newOrder = await Order.create({
                 code: code,
                 orderDetails: cartDetailsProduct,
@@ -86,7 +87,10 @@ const createOrderByCartUser = async (req, res) => {
                     5
                 ),
                 user_id: user_id,
-                shipping_detail: shipping_detail,
+                shipping_detail: {
+                    ...shipping_detail,
+                    address: newAddress[0]._id,
+                },
             })
             if (!newOrder) {
                 return res.status(HTTP_STATUS.CONFLICT).json({

@@ -91,6 +91,7 @@ const createAddress = async (req, res) => {
                 success: false,
                 status: HTTP_STATUS.CONFLICT,
                 message: 'This address already exists. ',
+                oldAdress,
             })
         }
 
