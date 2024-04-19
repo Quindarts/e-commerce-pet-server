@@ -2,7 +2,7 @@ const { toInteger } = require('lodash')
 const { generateProductCode } = require('../helper/randomCode')
 const Product = require('../models/product.model')
 const { HTTP_STATUS } = require('../utils/constant')
-
+const app_upload = require('./upload.controller')
 //[GET LIST PRODUCT BY PARAMS ] /get-all-product?params
 const getAllProduct = async (req, res) => {
     const { limit, offset } = Object.assign({}, req.query)
@@ -290,11 +290,6 @@ const createProduct = async (req, res) => {
 //[PUT UPDATE PRODUCT] :id/update
 const updateProduct = async (req, res) => {
     const { product_id } = req.params
-    console.log(
-        '🚀 ~ file: product.controller.js:137 ~ updateProduct ~ product_id:',
-        product_id
-    )
-
     const {
         name,
         images,
@@ -309,6 +304,7 @@ const updateProduct = async (req, res) => {
         provider,
         isActive,
     } = req.body
+
     try {
         const oldProduct = await Product.findOne({
             _id: product_id,
@@ -321,6 +317,8 @@ const updateProduct = async (req, res) => {
             })
         }
 
+        const img = Object.assign({}, images)
+
         const resultUpdate = await Product.findByIdAndUpdate(
             {
                 _id: product_id,
@@ -328,7 +326,11 @@ const updateProduct = async (req, res) => {
             {
                 $set: {
                     name: name,
-                    images: images,
+                    images: [
+                        {
+                            url: img.url,
+                        },
+                    ],
                     price,
                     avaiable: avaiable,
                     description: description,

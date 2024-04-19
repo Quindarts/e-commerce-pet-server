@@ -11,6 +11,8 @@ const {
     filterProduct,
     getProductByCategory,
 } = require('../controllers/product.controller')
+const { uploadSingleImage } = require('../controllers/upload.controller')
+
 const {
     isValidIdBodyAndQuery,
     isValidIdBodyAndQueryParams,
@@ -36,7 +38,8 @@ router.get(ROUTE.PRODUCT_BY_ID, getProductByID)
 router.post('/', createProduct)
 
 //[ROUTE UPDATE]
-router.put(ROUTE.PRODUCT_BY_ID, updateProduct)
+
+router.put(ROUTE.PRODUCT_BY_ID, uploadSingleImage, updateProduct)
 
 //[ROUTE DELETE]
 router.put(ROUTE.PRODUCT_CHANGE_STATUS, deleteProduct)
