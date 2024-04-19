@@ -15,9 +15,9 @@ const { createPayment } = require('./paymentInfo.controller')
 
 //[GET ORDER BY ID ]
 const getOrderById = async (req, res) => {
-    const { _id } = req.params
+    const { order_id } = req.params
     try {
-        const order = await Order.findById(_id).populate(
+        const order = await Order.findById(order_id).populate(
             'shipping_detail.address'
         )
 
@@ -41,6 +41,7 @@ const getOrderById = async (req, res) => {
 //[GET BY USER ID]
 const getOrderByUserId = async (req, res) => {
     const { user_id } = req.params
+    console.log('🚀 ~ getOrderByUserId ~ user_id:', user_id)
     try {
         const order = await Order.find({ user_id: user_id }).populate(
             'shipping_detail.address'

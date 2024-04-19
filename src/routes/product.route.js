@@ -35,7 +35,7 @@ router.get(ROUTE.PRODUCT_FILTER, filterProduct)
 router.get(ROUTE.PRODUCT_BY_ID, getProductByID)
 
 //[ROUTE POST] /
-router.post('/', createProduct)
+router.post('/', uploadSingleImage, createProduct)
 
 //[ROUTE UPDATE]
 

@@ -246,11 +246,17 @@ const createProduct = async (req, res) => {
                 message: 'This product already exists. ',
             })
         }
+        const img = Object.assign({}, images)
 
         const newProduct = await Product.create({
             code: newCode,
             name,
-            images,
+            images: [
+                {
+                    url: img.url,
+                    public_id: img.id,
+                },
+            ],
             price,
             avaiable,
             description,
@@ -327,8 +333,10 @@ const updateProduct = async (req, res) => {
                 $set: {
                     name: name,
                     images: [
+                        ...oldProduct,
                         {
                             url: img.url,
+                            public_id: img.id,
                         },
                     ],
                     price,
