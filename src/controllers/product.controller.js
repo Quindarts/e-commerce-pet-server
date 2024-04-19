@@ -333,7 +333,7 @@ const updateProduct = async (req, res) => {
                 $set: {
                     name: name,
                     images: [
-                        ...oldProduct,
+                        // ...oldProduct.images,
                         {
                             url: img.url,
                             public_id: img.id,

@@ -18,11 +18,11 @@ const createPayment = async (req, res, amount, bankCode, language) => {
         req.socket.remoteAddress ||
         req.connection.socket.remoteAddress
 
-    let config = require('config')
-    let tmnCode = config.get('vnp_TmnCode')
-    let secretKey = config.get('vnp_HashSecret')
-    let vnpUrl = config.get('vnp_Url')
-    let returnUrl = config.get('vnp_ReturnUrl')
+    // let config = require('config')
+    let tmnCode = `${process.env.VNP_TMNCODE}`
+    let secretKey = `${process.env.VNP_HASH_SECERT}`
+    let vnpUrl = `${process.env.VNP_URL}`
+    let returnUrl = `${process.env.VNP_RETURN_URL}`
     let orderId = moment(date).format('DDHHmmss')
     // let amount = req.body.amount
     // let bankCode = req.body.bankCode
@@ -73,9 +73,9 @@ const getPaymentSatus = async (req, res) => {
     delete vnp_Params['vnp_SecureHashType']
 
     vnp_Params = sortObject(vnp_Params)
-    let config = require('config')
-    let tmnCode = config.get('vnp_TmnCode')
-    let secretKey = config.get('vnp_HashSecret')
+    // let config = require('config')
+    let tmnCode = `${process.env.VNP_TMNCODE}`
+    let secretKey = `${process.env.VNP_HASH_SECERT}`
     let querystring = require('qs')
     let signData = querystring.stringify(vnp_Params, { encode: false })
     let crypto = require('crypto')

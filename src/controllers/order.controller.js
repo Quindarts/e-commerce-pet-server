@@ -41,7 +41,6 @@ const getOrderById = async (req, res) => {
 //[GET BY USER ID]
 const getOrderByUserId = async (req, res) => {
     const { user_id } = req.params
-    console.log('🚀 ~ getOrderByUserId ~ user_id:', user_id)
     try {
         const order = await Order.find({ user_id: user_id }).populate(
             'shipping_detail.address'
@@ -244,7 +243,7 @@ const handleOrderByPaymentOnline = async (req, res) => {
             return res.status(HTTP_STATUS.OK).json({
                 success: true,
                 status: HTTP_STATUS.OK,
-                message: 'Go to Payment failed. Please try again!',
+                message: 'Go to Payment.',
                 vpnUrl: vpnUrl,
             })
             // }
