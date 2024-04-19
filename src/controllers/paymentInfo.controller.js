@@ -4,6 +4,7 @@ const User = require('../models/user.model')
 const Product = require('../models/product.model')
 const Cart = require('../models/cart.model')
 const { HTTP_STATUS } = require('../utils/constant')
+require('dotenv').config()
 
 //[POST] CREATE PAYMENT
 const createPayment = async (req, res, amount, bankCode, language) => {
