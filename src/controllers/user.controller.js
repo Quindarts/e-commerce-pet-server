@@ -90,9 +90,10 @@ const updateUser = async (req, res) => {
         idGoogle,
         dateOfBirth,
     } = req.body
-
+    const {user_id } = req.params
     try {
-        const userOld = await User.findById({ _id: _id })
+        const id = user_id || _id
+        const userOld = await User.findById({ _id: id })
 
         if (!userOld) {
             res.status(HTTP_STATUS.NOT_FOUND).json({
