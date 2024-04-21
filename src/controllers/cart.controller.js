@@ -119,18 +119,13 @@ const getProductNeedInCart = async (product_id) => {
             },
             {
                 $group: {
-                    _id: null,
-                    product_ids: { $addToSet: '$cart_details.product_id' },
+                    _id: '$cart_details.product_id',
                 },
             },
-            {
-                $unwind: '$product_ids',
-            },
-            {
-                $sort: { product_ids: 1 },
-            },
         ])
+        console.log('🚀 ~ getProductNeedInCart ~ productList:', productList)
         var result
+
         productList.forEach((pr, index) => {
             if (pr['product_ids'].toString() === product_id) result = index
         })
@@ -351,10 +346,16 @@ const updateCartByProductID = async (req, res) => {
                 message: 'Product not avaiable',
             })
         }
+        const cart_details = cart.cart_details
+        let index_product
 
-        var productUpdate = await getProductNeedInCart(product_id)
+        cart_details.map((item, index) => {
+            if (item.product_id == product_id) {
+                index_product = index
+            }
+        })
 
-        var setValue = `cart_details.${productUpdate}.quantity`
+        var setValue = `cart_details.${index_product}.quantity`
         var kv = {}
         kv[setValue] = quantity
 
@@ -363,6 +364,7 @@ const updateCartByProductID = async (req, res) => {
                 _id: user_id,
                 'cart_details.product_id': product_id,
             },
+
             { $set: kv },
             { new: true }
         )

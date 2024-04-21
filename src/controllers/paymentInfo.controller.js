@@ -3,7 +3,7 @@ const Order = require('../models/order.model')
 const User = require('../models/user.model')
 const Product = require('../models/product.model')
 const Cart = require('../models/cart.model')
-const { HTTP_STATUS } = require('../utils/constant')
+const { HTTP_STATUS, STATUS_ORDER } = require('../utils/constant')
 require('dotenv').config()
 
 //[POST] CREATE PAYMENT
@@ -84,6 +84,22 @@ const getPaymentSatus = async (req, res) => {
     let signed = hmac.update(new Buffer(signData, 'utf-8')).digest('hex')
 
     if (secureHash === signed) {
+        const resultChange = await Order.findOneAndUpdate(
+            {
+                _id: order_id,
+            },
+            {
+                $set: {
+                    status: STATUS_ORDER.PAID,
+                },
+                $pull: {
+                    paymentMethod: PAYMENT_METHOD.ONLINE,
+                },
+            },
+            {
+                new: true,
+            }
+        )
         return res.status(HTTP_STATUS.OK).json({
             success: true,
             status: HTTP_STATUS.OK,
