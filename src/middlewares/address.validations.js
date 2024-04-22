@@ -1,7 +1,7 @@
 const { check } = require('express-validator')
 
 exports.isValidProvinceLength = [
-    check('provinceName')
+    check('province.provinceName')
         .isLength({ min: 3 })
         .withMessage('Province name is not required'),
     (req, res, next) => {
