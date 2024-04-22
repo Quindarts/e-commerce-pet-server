@@ -33,7 +33,7 @@ router.post(
 //[PUT] update address by ID
 router.put(
     ROUTE.GET_ADDRESS_BY_ID,
-    isValidProvinceLength,
+    // isValidProvinceLength,
     isValidCountryLength,
     validate,
     updateAddress
