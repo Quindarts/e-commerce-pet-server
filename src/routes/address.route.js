@@ -24,7 +24,7 @@ router.get(ROUTE.GET_ADDRESS_BY_ID, getAddressByID)
 //[POST] create address
 router.post(
     '/',
-    isValidProvinceLength,
+    // isValidProvinceLength,
     isValidCountryLength,
     validate,
     createAddress

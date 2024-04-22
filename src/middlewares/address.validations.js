@@ -1,12 +1,12 @@
 const { check } = require('express-validator')
 
 exports.isValidProvinceLength = [
-    check('province.provinceName')
-        .isLength({ min: 3 })
-        .withMessage('Province name is not required'),
-    (req, res, next) => {
-        next()
-    },
+    // check('province.provinceName')
+    //     .isLength({ min: 3 })
+    //     .withMessage('Province name is not required'),
+    // (req, res, next) => {
+    //     next()
+    // },
 ]
 
 exports.isValidCountryLength = [
