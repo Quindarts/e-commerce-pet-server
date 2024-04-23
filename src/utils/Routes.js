@@ -23,7 +23,8 @@ const ROUTE = {
     //Product
     PRODUCT: '/products',
     PRODUCT_BY_ID: '/:product_id',
-    PRODUCT_BY_ID_ATTRIBUTE_PRODUCT_ID :':/product_id/attribute/:attribute_product_id',
+    PRODUCT_BY_ID_ATTRIBUTE_PRODUCT_ID:
+        ':/product_id/attribute/:attribute_product_id',
     PRODUCT_CHANGE_STATUS: '/status/:product_id',
     PRODUCT_FILTER: '/filter',
     PRODUCT_QUERY: '/search',
@@ -43,8 +44,7 @@ const ROUTE = {
     //Cart
     CART: '/carts',
     CART_BY_USER_ID: '/:user_id',
-    CART_UPDATE_BY_USER_ID: '/:user_id/update',
-    CART_UPDATE_BY_PRODUCT_ID: '/:user_id/change/:product_id',
+    CART_UPDATE_BY_PRODUCT_ID: '/:user_id/products/:product_id',
     // CART_UPDATE_BY_PRODUCT_ID: '/:user_id/product/:product_id',
 
     //Order

@@ -248,12 +248,13 @@ const addProductToCart = async (req, res) => {
         }
         const cart_details = cart.cart_details
         let isProductInCart = false
-
-        cart_details.map((item) => {
+        let init_index
+        cart_details.map((item, index) => {
             console.log(item)
             if (item.product_id == product_id) {
                 new_quantity += item.quantity
                 isProductInCart = true
+                init_index = index
             }
         })
         var checkedAvaiable = await checkProductItemCartAvaiable(
@@ -268,8 +269,7 @@ const addProductToCart = async (req, res) => {
             })
         } else {
             if (isProductInCart) {
-                var productUpdate = await getProductNeedInCart(product_id)
-                var setValue = `cart_details.${productUpdate}.quantity`
+                var setValue = `cart_details.${init_index}.quantity`
                 var kv = {}
                 kv[setValue] = new_quantity
                 const resultUpdate = await Cart.findOneAndUpdate(
