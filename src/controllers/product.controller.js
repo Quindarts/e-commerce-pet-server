@@ -1,8 +1,13 @@
 const { toInteger } = require('lodash')
-const { generateProductCode } = require('../helper/randomCode')
+const {
+    generateProductCode,
+    generateRandomAttriButeCode,
+} = require('../helper/randomCode')
 const Product = require('../models/product.model')
 const { HTTP_STATUS } = require('../utils/constant')
 const app_upload = require('./upload.controller')
+const AttributeProduct = require('../models/attributeProduct.model')
+const { createAttributeProduct } = require('./attributeProduct.controller')
 //[GET LIST PRODUCT BY PARAMS ] /get-all-product?params
 const getAllProduct = async (req, res) => {
     const { limit, offset } = Object.assign({}, req.query)
@@ -192,8 +197,8 @@ const getProductByID = async (req, res) => {
             _id: product_id,
         })
             .populate('category')
+            .populate('attribute_product')
             .lean()
-
         if (!product) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
@@ -201,6 +206,7 @@ const getProductByID = async (req, res) => {
                 message: 'No Product found.',
             })
         }
+
         res.status(HTTP_STATUS.OK).json({
             success: true,
             status: HTTP_STATUS.OK,
@@ -224,19 +230,19 @@ const createProduct = async (req, res) => {
     const {
         name,
         images,
-        attribute_product,
         price,
         avaiable,
         description,
         tags,
         brand,
         dimensions,
+        attribute_product,
         category,
         provider,
     } = req.body
+
     try {
         const newCode = generateProductCode(name)
-
         const checkCode = await Product.findOne({ code: newCode }).lean()
 
         if (checkCode) {
@@ -250,22 +256,22 @@ const createProduct = async (req, res) => {
 
         const newProduct = await Product.create({
             code: newCode,
-            name,
+            name: name,
             images: [
                 {
                     url: img.url,
                     public_id: img.id,
                 },
             ],
-            price,
-            avaiable,
-            description,
-            tags,
-            brand,
-            dimensions,
-            category,
-            attribute_product,
-            provider,
+            price: price,
+            avaiable: avaiable,
+            description: description,
+            tags: tags,
+            brand: brand,
+            dimensions: dimensions,
+            category: category,
+            provider: provider,
+            attribute_product: attribute_product,
         })
         if (!newProduct) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
@@ -274,11 +280,12 @@ const createProduct = async (req, res) => {
                 message: 'Your product is not valid',
             })
         }
-        res.status(HTTP_STATUS.CREATED).json({
+
+        return res.status(HTTP_STATUS.CREATED).json({
             success: true,
             status: HTTP_STATUS.CREATED,
             message: 'Create new Product success.',
-            newProduct,
+            newProduct: final_product,
         })
     } catch (error) {
         console.log(
@@ -333,7 +340,6 @@ const updateProduct = async (req, res) => {
                 $set: {
                     name: name,
                     images: [
-                        // ...oldProduct.images,
                         {
                             url: img.url,
                             public_id: img.id,
@@ -353,6 +359,9 @@ const updateProduct = async (req, res) => {
             },
             { new: true }
         )
+            .populate('category')
+            .populate('attribute_product')
+            .lean()
         if (!resultUpdate) {
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
                 success: false,

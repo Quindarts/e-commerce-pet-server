@@ -23,6 +23,7 @@ const ROUTE = {
     //Product
     PRODUCT: '/products',
     PRODUCT_BY_ID: '/:product_id',
+    PRODUCT_BY_ID_ATTRIBUTE_PRODUCT_ID :':/product_id/attribute/:attribute_product_id',
     PRODUCT_CHANGE_STATUS: '/status/:product_id',
     PRODUCT_FILTER: '/filter',
     PRODUCT_QUERY: '/search',

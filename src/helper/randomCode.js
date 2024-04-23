@@ -31,7 +31,7 @@ function generateRandomAttriButeCode(name) {
     return code
 }
 
-function generateProductCode(length) {
+function generateProductCode(name) {
     const formattedName = name.toLowerCase().replace(/\s/g, '')
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
     const maxLength = characters.length

@@ -10,6 +10,7 @@ const {
     getProductByQuery,
     filterProduct,
     getProductByCategory,
+    addAttributeProductToProduct,
 } = require('../controllers/product.controller')
 const { uploadSingleImage } = require('../controllers/upload.controller')
 
@@ -22,6 +23,9 @@ const { validate } = require('../middlewares/validation')
 //[ROUTE GET ALL] //get-all?limit=&offset=
 router.get('/', isValidIdBodyAndQueryParams, validate, getAllProduct)
 
+//[ROUTE POST] /
+router.post('/', uploadSingleImage, createProduct)
+
 //[ROUTE GET BY QUERY] // name, code
 router.get(ROUTE.PRODUCT_QUERY, getProductByQuery)
 
@@ -33,9 +37,6 @@ router.get(ROUTE.PRODUCT_FILTER, filterProduct)
 
 //[ROUTE GET] /:id
 router.get(ROUTE.PRODUCT_BY_ID, getProductByID)
-
-//[ROUTE POST] /
-router.post('/', uploadSingleImage, createProduct)
 
 //[ROUTE UPDATE]
 

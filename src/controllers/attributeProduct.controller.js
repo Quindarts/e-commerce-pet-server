@@ -2,6 +2,8 @@ const AttributeProduct = require('../models/attributeProduct.model')
 const { HTTP_STATUS } = require('../utils/constant')
 const helperCode = require('../helper/randomCode')
 
+//[GET ALL BY PRODUCT ID]
+
 //[GET BY ID] GET ATTRIBUTE PRODUCT BY ID /:attribute_product_id
 const getAttributeProductById = async (req, res) => {
     const { attribute_product_id } = req.params
@@ -21,7 +23,7 @@ const getAttributeProductById = async (req, res) => {
             success: true,
             status: HTTP_STATUS.CREATED,
             message: 'Get Attribute Product by id success.',
-            OldAttributeProduct,
+            attributeProduct: OldAttributeProduct,
         })
     } catch (error) {
         console.log(
@@ -74,19 +76,8 @@ const getAllAttributeProductByParams = async (req, res) => {
 }
 //[POST] CREATE NEW ATTRIBUTE PRODUCT
 const createAttributeProduct = async (req, res) => {
-    const { name, value, avaiable } = req.body
+    const { name, value, avaiable, product_id } = req.body
     try {
-        const oldAttriButeProduct = await AttributeProduct.findOne({
-            name: name,
-        }).lean()
-
-        if (oldAttriButeProduct) {
-            return res.status(HTTP_STATUS.CONFLICT).json({
-                success: false,
-                status: HTTP_STATUS.CONFLICT,
-                message: 'This attribute product already exists. ',
-            })
-        }
         let newCode = helperCode.generateRandomAttriButeCode(name)
 
         const newAttributeProduct = await AttributeProduct.create({
@@ -94,6 +85,7 @@ const createAttributeProduct = async (req, res) => {
             name: name,
             value: value,
             avaiable: avaiable,
+            product_id: product_id,
         })
 
         if (!newAttributeProduct) {
@@ -121,7 +113,7 @@ const createAttributeProduct = async (req, res) => {
 //[PUT] UPDATE ATTRIBUTE PRODUCT BY ID /:attribute_product_id
 const updateAttributeProduct = async (req, res) => {
     try {
-        const { attribute_product_id } = req.params || req.body
+        const { attribute_product_id, product_id } = req.params || req.body
         const { name, value, avaiable } = req.body
 
         const oldAttributeProduct = await AttributeProduct.findOne({
@@ -132,7 +124,7 @@ const updateAttributeProduct = async (req, res) => {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
                 status: HTTP_STATUS.NOT_FOUND,
-                message: 'This Attribute Product already exists. ',
+                message: 'No attribute product foun.Try again..',
             })
         }
 
@@ -142,9 +134,10 @@ const updateAttributeProduct = async (req, res) => {
             },
             {
                 $set: {
-                    name,
-                    value,
-                    avaiable,
+                    name: name,
+                    value: value,
+                    avaiable: avaiable,
+                    product_id: product_id,
                 },
             },
             { new: true }
@@ -160,7 +153,7 @@ const updateAttributeProduct = async (req, res) => {
             success: true,
             status: HTTP_STATUS.CREATED,
             message: 'Update Attribute Product success.',
-            AttributeProduct: updateAttributeProduct,
+            attributeProduct: updateAttributeProduct,
         })
     } catch (error) {
         console.log(
@@ -177,8 +170,16 @@ const updateAttributeProduct = async (req, res) => {
 //[DELETE] DELETE ATTRIBUTE PRODUCT BY ID /:attribute_product_id
 const deleteAttributeProduct = async (req, res) => {
     try {
-        const { attribute_product_id } = req.params
+        const { attribute_product_id, product_id } = req.params
+        const oldProduct = await getProductById(product_id)
 
+        if (oldProduct) {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({
+                success: false,
+                status: HTTP_STATUS.BAD_REQUEST,
+                message: 'Delete Failed. No Product valid.',
+            })
+        }
         const deleteAttributeProduct =
             await AttributeProduct.findByIdAndDelete(attribute_product_id)
 

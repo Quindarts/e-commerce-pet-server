@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb')
 const mongoose = require('mongoose')
 
 const attributeProduct = new mongoose.Schema({
@@ -5,7 +6,6 @@ const attributeProduct = new mongoose.Schema({
         type: String,
         required: true,
         uppercase: true,
-        unique: true,
     },
     name: {
         type: String,
@@ -17,7 +17,10 @@ const attributeProduct = new mongoose.Schema({
     },
     avaiable: {
         type: Number,
-        required: true,
+    },
+    product_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
     },
 })
 
