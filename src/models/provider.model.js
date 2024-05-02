@@ -20,4 +20,5 @@ const providerSchema = new mongoose.Schema({
     },
 })
 
-module.exports = mongoose.model('Provider', providerSchema)
+const Provider = mongoose.model('Provider', providerSchema) // map bảng 'Provider' với class Provider
+module.exports = Provider
