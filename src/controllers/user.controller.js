@@ -90,7 +90,7 @@ const updateUser = async (req, res) => {
         idGoogle,
         dateOfBirth,
     } = req.body
-    const {user_id } = req.params
+    const { user_id } = req.params
     try {
         const id = user_id || _id
         const userOld = await User.findById({ _id: id })
@@ -164,6 +164,23 @@ const changeActiveUser = async (req, res) => {
         })
     } catch (error) {
         console.log('🚀 ~ unActiveUser ~ error:', error)
+    }
+}
+
+const forgotPassword = async (req, res) => {
+    const { email } = req.body
+    try {
+        const user = await User.findOne({ email: email }).lean()
+        if (!user) {
+            res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                status: HTTP_STATUS.NOT_FOUND,
+                message: 'No email found',
+            })
+        }
+        
+    } catch (error) {
+        console.log('🚀 ~ forgotPassword ~ error:', error)
     }
 }
 module.exports = { getAllUser, getUserById, updateUser, changeActiveUser }

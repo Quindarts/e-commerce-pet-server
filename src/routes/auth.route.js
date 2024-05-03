@@ -44,4 +44,5 @@ module.exports = router
 //[ROUTE LOGIN-GOOGLE ]
 
 //[ROUTE FORGOT-PASSWORD]
+router.post(ROUTE.FORGOT_PASSWORD)
 //[ROUTE CHANGE-PASSWORD]
