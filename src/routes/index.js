@@ -9,6 +9,8 @@ const attributeProduct = require('./attributeProduct.route')
 const payment = require('./payment.route')
 const order = require('./order.route')
 const upload = require('./upload.route')
+const provider = require('./provider.route')
+
 function router(app) {
     app.use(ROUTE.AUTH, auth)
     app.use(ROUTE.ADDRESS, address)
@@ -20,6 +22,7 @@ function router(app) {
     app.use('/payment', payment)
     app.use(ROUTE.ORDER, order)
     app.use('/upload', upload)
+    app.use(ROUTE.PROVIDER, provider)
 }
 
 module.exports = router
