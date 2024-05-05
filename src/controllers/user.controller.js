@@ -36,7 +36,7 @@ async function getAllUser(req, res) {
             '🚀 ~ file: user.controller.js:10 ~ getAllUser ~ error:',
             error
         )
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
             message: 'Failed to get user.',
@@ -71,8 +71,14 @@ async function getUserById(req, res) {
         })
     } catch (error) {
         console.log('🚀 ~ getUserById ~ error:', error)
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to get user by id.',
+        })
     }
 }
+
 //[UPDATE USER]
 const updateUser = async (req, res) => {
     const {
@@ -89,6 +95,7 @@ const updateUser = async (req, res) => {
         idFacebook,
         idGoogle,
         dateOfBirth,
+        email,
     } = req.body
     const { user_id } = req.params
     try {
@@ -118,6 +125,7 @@ const updateUser = async (req, res) => {
                     idFacebook,
                     idGoogle,
                     dateOfBirth,
+                    email,
                 },
             },
             { new: true }
@@ -130,8 +138,14 @@ const updateUser = async (req, res) => {
         })
     } catch (error) {
         console.log('🚀 ~ updateUser ~ error:', error)
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to update user.',
+        })
     }
 }
+//[CHANGE ACTIVE USER]
 const changeActiveUser = async (req, res) => {
     const { user_id } = req.params
     try {
@@ -164,6 +178,11 @@ const changeActiveUser = async (req, res) => {
         })
     } catch (error) {
         console.log('🚀 ~ unActiveUser ~ error:', error)
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Failed to change active user.',
+        })
     }
 }
 
@@ -178,7 +197,6 @@ const forgotPassword = async (req, res) => {
                 message: 'No email found',
             })
         }
-        
     } catch (error) {
         console.log('🚀 ~ forgotPassword ~ error:', error)
     }
