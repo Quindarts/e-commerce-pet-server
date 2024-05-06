@@ -1,3 +1,4 @@
+const { name } = require('ejs')
 const Provider = require('../models/provider.model')
 const { HTTP_STATUS } = require('../utils/constant')
 
@@ -6,9 +7,15 @@ const { HTTP_STATUS } = require('../utils/constant')
  * @param {import('express').Request} req
  * @param {import('express').Response} res
  */
+
 async function createProvider(req, res) {
-    const provider = await Provider.create(req.body)
-    res.json(provider)
+    const newProvider = await Provider.create(req.body)
+    return res.status(HTTP_STATUS.CREATED).json({
+        success: true,
+        status: HTTP_STATUS.CREATED,
+        message: 'Create new Provider success.',
+        provider: newProvider,
+    })
 }
 
 /**
@@ -17,15 +24,23 @@ async function createProvider(req, res) {
  * @param {import('express').Response} res
  */
 async function getManyProviders(req, res) {
-    const items = await Provider.find(null, null, {
-        skip: req.query.offset,
-        limit: req.query.limit,
-    })
-    const count = await Provider.countDocuments()
+    const limit = req.query.limit
+    const offset = req.query.offset
+    const listProvider = await Provider.find(null, null, {
+        limit: limit,
+        skip: offset,
+    }).lean()
 
-    res.json({
-        items,
-        count,
+    res.status(HTTP_STATUS.OK).json({
+        success: true,
+        status: HTTP_STATUS.OK,
+        message: 'Get all list providers success.',
+        list: listProvider,
+        params: {
+            limit: limit,
+            offset: offset,
+            totalProvider: await Provider.countDocuments(),
+        },
     })
 }
 
@@ -37,32 +52,32 @@ async function getManyProviders(req, res) {
 
 async function getProviderById(req, res) {
     const { providerId } = req.params
-    const provider = await Provider.findById(providerId)
-    if (!provider) {
-        return res.status(HTTP_STATUS.NOT_FOUND).json({
-            success: false,
-            status: HTTP_STATUS.NOT_FOUND,
-            message: 'Provider is not existed',
-        })
-    }
-    res.json(provider)
+    const provider = await Provider.findById(providerId).lean()
+
+    res.status(HTTP_STATUS.OK).json({
+        success: true,
+        status: HTTP_STATUS.OK,
+        message: 'Get provider success.',
+        provider: provider,
+    })
 }
 
 // Update provider
-async function updateProvider(req, res) {
+async function updateProviderById(req, res) {
     const { providerId } = req.params
     const { name, email, phone } = req.body
-    const provider = await Provider.findOneAndUpdate(
+    const updateProvider = await Provider.findOneAndUpdate(
         { _id: providerId },
         {
             name: name,
             email: email,
             phone: phone,
         }
-    )
-    res.json({
-        _id: providerId,
-        message: 'Update provider successed',
+    ).lean()
+    res.status(HTTP_STATUS.CREATED).json({
+        success: true,
+        status: HTTP_STATUS.CREATED,
+        message: 'Update Provider success.',
     })
 }
 
@@ -73,16 +88,11 @@ async function updateProvider(req, res) {
  */
 async function deleteProviderById(req, res) {
     const { providerId } = req.params
-    const deleteProvider = await Provider.deleteOne({ _id: providerId })
-    if (deleteProvider.deletedCount === 0) {
-        return res.status(HTTP_STATUS.NOT_FOUND).json({
-            success: false,
-            status: HTTP_STATUS.NOT_FOUND,
-            message: 'Provider is not existed',
-        })
-    }
-    res.json({
-        message: 'Delete provider successed',
+    await Provider.deleteOne({ _id: providerId })
+    res.status(HTTP_STATUS.CREATED).json({
+        success: true,
+        status: HTTP_STATUS.CREATED,
+        message: 'Delete prodvider success.',
     })
 }
 
@@ -90,6 +100,6 @@ module.exports = {
     getManyProviders,
     createProvider,
     getProviderById,
-    updateProvider,
+    updateProviderById,
     deleteProviderById,
 }

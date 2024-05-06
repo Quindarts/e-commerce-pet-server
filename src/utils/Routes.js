@@ -20,8 +20,8 @@ const ROUTE = {
     CHANGE_ACTIVE_CATEGORY_BY_ID: '/:category_id/active',
     CATEGORY_QUERY: '/search',
 
-    //Category
-    PROVIDER: '/provider',
+    //Provider
+    PROVIDER: '/providers',
     PROVIDER_BY_ID: '/:providerId',
 
     //Product
