@@ -2,7 +2,7 @@ const cloudinary = require('../config/cloudinary')
 const { HTTP_STATUS } = require('../utils/constant')
 
 const uploadSingleImage = async (req, res, next) => {
-    if (req.body.path)
+    if (req.body.images[0].url)
         cloudinary.uploader.upload(
             req.body.images[0].url,
             async function (err, result) {

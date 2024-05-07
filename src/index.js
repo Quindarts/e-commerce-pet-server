@@ -2,12 +2,18 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const helmet = require('helmet')
-const mongoDB = require('./config/mongo')
 const { appConfig } = require('./config/app')
 const cors = require('cors')
 const route = require('./routes')
-app.use(express.json())
+const mongoDB = require('./config/mongo')
+const redis = require('./config/redis')
 mongoDB.connect()
+
+redis.connect((error) => {
+    if (error) {
+        console.error(error)
+    }
+})
 
 const corsOptions = {
     origin: '*',

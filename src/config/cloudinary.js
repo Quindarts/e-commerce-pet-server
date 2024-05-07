@@ -1,11 +1,10 @@
 const cloudinary = require('cloudinary').v2
-const dotenv = require('dotenv')
-dotenv.config()
+const { appConfig } = require('./app')
 
 cloudinary.config({
-    cloud_name: 'dyd2nynrp',
-    api_key: '329673611634987',
-    api_secret: 'ub6udu92OhFMqWK3oa0brRiJu3s',
+    cloud_name: appConfig.db_image.cloud_name,
+    api_key: appConfig.db_image.api_key,
+    api_secret: appConfig.db_image.api_secret,
 })
 
 module.exports = cloudinary
