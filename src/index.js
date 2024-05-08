@@ -7,6 +7,7 @@ const cors = require('cors')
 const route = require('./routes')
 const mongoDB = require('./config/mongo')
 const redis = require('./config/redis')
+
 mongoDB.connect()
 
 redis.connect((error) => {
@@ -22,6 +23,7 @@ const corsOptions = {
 
 app.use(helmet())
 app.use(cors(corsOptions))
+app.use(express.json())
 
 route(app)
 
