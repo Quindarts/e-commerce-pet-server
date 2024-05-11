@@ -70,7 +70,7 @@ const getOrderByUserId = async (req, res) => {
 }
 //[GET ALL BY PARAMS]
 const getAllOrderByParams = async (req, res) => {
-    const { limit, offset } = req.params
+    const { limit, offset } = req.query
     try {
         const listOrder = await Order.find()
             .limit(limit)
