@@ -2,7 +2,13 @@ const redis = require('redis')
 const dotenv = require('dotenv')
 dotenv.config()
 
-const client = redis.createClient({})
+const REDIS_CONFIG = {
+    url: process.env.KV_URL,
+    socket: {
+        tls: true,
+    },
+}
+const client = redis.createClient(REDIS_CONFIG)
 
 const handleEventRedisStatus = (status) => {
     client.on(status, () => {
