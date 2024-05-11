@@ -1,7 +1,8 @@
 const Category = require('.././models/category.model')
 const helperCode = require('../helper/randomCode')
 const { HTTP_STATUS } = require('../utils/constant')
-
+const redis = require('../config/redis')
+const { ROUTE } = require('../utils/Routes')
 //[GET CATEGORY BY ID] /:category_id
 const getCategoryById = async (req, res) => {
     const { category_id } = req.params
@@ -155,8 +156,38 @@ const getRootCategory = async (req, res) => {
         })
     }
 }
+const getTreeCategoryInRedis = async (req, res) => {
+    try {
+        const data = await redis.get(`${ROUTE.CATEGORY_TREE}`)
+        if (!data) {
+            const tree = await getTreeCategory()
+            redis.setEx(ROUTE.CATEGORY_TREE, 10000, JSON.stringify(tree))
+            return res.status(HTTP_STATUS.OK).json({
+                success: true,
+                status: HTTP_STATUS.OK,
+                message: 'Category found.',
+                tree: tree,
+            })
+        }
+
+        return res.status(HTTP_STATUS.OK).json({
+            success: true,
+            status: HTTP_STATUS.OK,
+            message: 'Category found.',
+            tree: JSON.parse(data),
+        })
+    } catch (error) {
+        console.log('🚀 ~ getTreeCategoryInRedis ~ error:', error)
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Get tree category failed.',
+        })
+    }
+}
+
 //[GET ALL TREE CATEGORY]
-const getTreeCategory = async (req, res) => {
+const getTreeCategory = async () => {
     try {
         const nodeRoot = await Category.find({
             path: {
@@ -189,12 +220,7 @@ const getTreeCategory = async (req, res) => {
 
                 tree.push(current_node)
             }
-            return res.status(HTTP_STATUS.OK).json({
-                success: true,
-                status: HTTP_STATUS.OK,
-                message: 'Category found.',
-                tree,
-            })
+            return tree
         }
     } catch (error) {
         console.log('🚀 ~ getTreeCategory ~ error:', error)
@@ -443,4 +469,5 @@ module.exports = {
     getTreeCategory,
     updateActiveCategory,
     getCategoryByQuery,
+    getTreeCategoryInRedis,
 }

@@ -12,6 +12,7 @@ const {
     getTreeCategory,
     updateActiveCategory,
     getCategoryByQuery,
+    getTreeCategoryInRedis,
 } = require('../controllers/category.controller')
 const { ROUTE } = require('../utils/Routes')
 const {
@@ -32,7 +33,7 @@ router.get(ROUTE.CATEGORY_ROOT, getRootCategory)
 
 //[ROUTE GET] //get-tree-category
 
-router.get(ROUTE.CATEGORY_TREE, getTreeCategory)
+router.get(ROUTE.CATEGORY_TREE, getTreeCategoryInRedis)
 
 //[ROUTE GET] /get-by-id/:id
 router.get(ROUTE.CATEGORY_BY_ID, isValidCategoryId, validate, getCategoryById)

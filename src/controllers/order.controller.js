@@ -12,6 +12,7 @@ const {
 } = require('../utils/constant')
 const { generateOrderCode } = require('../helper/randomCode')
 const { createPayment } = require('./paymentInfo.controller')
+const _ = require('lodash')
 
 //[GET ORDER BY ID ]
 const getOrderById = async (req, res) => {
@@ -85,6 +86,9 @@ const getAllOrderByParams = async (req, res) => {
                 message: 'Get all list order not found.',
             })
         }
+        const totalPage = await Order.find().count()
+        const totalByLimit = _.ceil(totalPage / _.toInteger(limit))
+
         return res.status(HTTP_STATUS.OK).json({
             success: true,
             status: HTTP_STATUS.OK,
@@ -93,6 +97,7 @@ const getAllOrderByParams = async (req, res) => {
             params: {
                 limit: limit,
                 page: offset,
+                totalPage: `${totalByLimit}`,
             },
         })
     } catch (error) {

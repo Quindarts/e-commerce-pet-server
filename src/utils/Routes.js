@@ -26,6 +26,7 @@ const ROUTE = {
 
     //Product
     PRODUCT: '/products',
+    PRODUCT_ADMIN: '/admin',
     PRODUCT_BY_ID: '/:product_id',
     PRODUCT_BY_ID_ATTRIBUTE_PRODUCT_ID:
         ':/product_id/attribute/:attribute_product_id',

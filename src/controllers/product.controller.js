@@ -1,15 +1,9 @@
-const { toInteger } = require('lodash')
-const {
-    generateProductCode,
-    generateRandomAttriButeCode,
-} = require('../helper/randomCode')
+const { generateProductCode } = require('../helper/randomCode')
 const Product = require('../models/product.model')
 const { HTTP_STATUS } = require('../utils/constant')
-const app_upload = require('./upload.controller')
-const AttributeProduct = require('../models/attributeProduct.model')
-const { createAttributeProduct } = require('./attributeProduct.controller')
-//[GET LIST PRODUCT BY PARAMS ] /get-all-product?params
-const getAllProduct = async (req, res) => {
+const _ = require('lodash')
+
+const getAllProductManagerAdmin = async (req, res) => {
     const { limit, offset } = Object.assign({}, req.query)
     var listProduct = await Product.find()
         .populate('category')
@@ -26,7 +20,6 @@ const getAllProduct = async (req, res) => {
         })
     }
     const totalPage = await Product.find().count()
-    console.log(totalPage)
     res.status(HTTP_STATUS.OK).json({
         success: true,
         status: HTTP_STATUS.OK,
@@ -35,7 +28,37 @@ const getAllProduct = async (req, res) => {
         params: {
             limit: limit,
             page: offset,
-            totalPage: `${parseInt(totalPage / toInteger(limit)) + 1}`,
+            totalPage: `${_.ceil(totalPage / _.toInteger(limit))}`,
+        },
+    })
+}
+//[GET LIST PRODUCT BY PARAMS ] /get-all-product?params
+const getAllProduct = async (req, res) => {
+    const { limit, offset } = Object.assign({}, req.query)
+    var listProduct = await Product.find({ isActive: true })
+        .populate('category')
+        .limit(limit)
+        .skip((offset - 1) * limit)
+        .sort({ createdAt: -1 })
+        .lean()
+
+    if (!listProduct) {
+        return res.status(HTTP_STATUS.NOT_FOUND).json({
+            success: false,
+            status: HTTP_STATUS.NOT_FOUND,
+            message: 'Get all list product not found.',
+        })
+    }
+    const totalPage = await Product.find().count()
+    res.status(HTTP_STATUS.OK).json({
+        success: true,
+        status: HTTP_STATUS.OK,
+        message: 'Get list product success.',
+        list: listProduct,
+        params: {
+            limit: limit,
+            page: offset,
+            totalPage: `${_.ceil(totalPage / _.toInteger(limit))}`,
         },
     })
 }
@@ -43,15 +66,20 @@ const getAllProduct = async (req, res) => {
 const getProductByCategory = async (req, res) => {
     const { category_id } = req.params
     try {
-        const list_product = await Product.find({ category: category_id })
+        const list_product = await Product.find({
+            category: category_id,
+            isActive: true,
+        })
             .populate('category')
             .sort({ createdAt: -1 })
             .lean()
+        const size = list_product.length
         return res.status(HTTP_STATUS.OK).json({
             success: true,
             status: 200,
             message: 'Search product by category query success.',
             list_product,
+            total: `${size}`,
         })
     } catch (error) {
         console.log('🚀 ~ getProductByCategory ~ error:', error)
@@ -110,9 +138,7 @@ const getProductByQuery = async (req, res) => {
 //url/shop/keyword&&limit=&&offset=&&minPrice=&&maxPrice&&color=&&brand=sortField=sortType
 //[FILTER PRODUCT ]
 const filterProduct = async (req, res) => {
-    console.log('heee')
     const { offset, limit, sortField, sortType } = Object.assign({}, req.query)
-
     const {
         category_id,
         brand,
@@ -122,7 +148,8 @@ const filterProduct = async (req, res) => {
         keywords,
         searchType,
     } = Object.assign({}, req.query)
-    var query = {}
+
+    var query = { isActive: true }
     if (distancePrice !== '' && distancePrice !== undefined) {
         query['price'] = {
             $gte: parseInt(distancePrice.split(',')[0]),
@@ -157,7 +184,6 @@ const filterProduct = async (req, res) => {
     }
 
     try {
-        console.log('🚀 ~ filterProduct ~ query:', query)
         const products = await Product.find(query)
             .populate('category')
             .limit(limit)
@@ -175,12 +201,11 @@ const filterProduct = async (req, res) => {
             params: {
                 limit: limit,
                 page: offset,
-                totalPage: `${parseInt(totalPage / toInteger(limit)) + 1}`,
+                totalPage: `${_.ceil(totalPage / _.toInteger(limit))}`,
             },
         })
     } catch (error) {
         console.log('🚀 ~ filterProduct ~ error:', error)
-
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
@@ -448,4 +473,5 @@ module.exports = {
     filterProduct,
     getProductByQuery,
     getProductByCategory,
+    getAllProductManagerAdmin,
 }

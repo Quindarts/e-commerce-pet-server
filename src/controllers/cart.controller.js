@@ -36,9 +36,7 @@ const getAllCart = async (req, res) => {
 const getCartByUserId = async (req, res) => {
     try {
         const { user_id } = req.params
-        console.log('🚀 ~ getCartByUserId ~ user_id:', user_id)
         const cart = await Cart.findOne({ _id: user_id }).lean()
-        console.log('🚀 ~ getCartByUserId ~ cart:', cart)
         if (!cart) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
@@ -125,7 +123,6 @@ const getProductNeedInCart = async (product_id) => {
         ])
         console.log('🚀 ~ getProductNeedInCart ~ productList:', productList)
         var result
-
         productList.forEach((pr, index) => {
             if (pr['product_ids'].toString() === product_id) result = index
         })

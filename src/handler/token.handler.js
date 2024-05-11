@@ -32,7 +32,7 @@ const isExpiredToken = (req, res, next) => {
         const token =
             req.body.token ||
             req.query.token ||
-            req.headers['authorization'].replace('Bearer ', '')
+            req.headers['authorization']?.replace('Bearer ', '')
 
         if (!token) {
             return res.status(HTTP_STATUS.FORBIDDEN).json({

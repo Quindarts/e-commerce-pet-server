@@ -54,7 +54,7 @@ const login = async (req, res) => {
 
             const accessToken = jwtHelper.generateToken(
                 'access',
-                { id: user._id },
+                { id: user._id, dateCreated: Date.now },
                 remmber ? '24h' : '1h'
             )
             res.status(HTTP_STATUS.OK).json({
@@ -64,7 +64,7 @@ const login = async (req, res) => {
                 user: {
                     id: user._id,
                     userName: user.userName,
-                    role: user.role,
+
                     email: user.email,
                     isActive: user.isActive,
                 },
@@ -84,8 +84,9 @@ const register = async (req, res) => {
     const { email, userName, password, first_name, last_name } = req.body
 
     const oldUser = await User.findOne({
-        userName: userName,
+        $or: [{ userName: userName }, { email: email }],
     }).lean()
+    console.log('🚀 ~ register ~ oldUser:', oldUser)
 
     //Check isEmpty user
     if (oldUser) {

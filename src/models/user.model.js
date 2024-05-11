@@ -30,22 +30,27 @@ const userSchema = new mongoose.Schema({
         required: false,
         default: '',
     },
-    address: ['adressSchema'],
+    address: {
+        type: ['adressSchema'],
+        default: null,
+    },
     rewardPoints: {
         type: Number,
         default: 0,
     },
     gender: {
         type: String,
-        enum: ['female', 'male'],
-        default: null,
+        enum: ['female', 'male', 'other', 'unknown'],
+        default: 'unknown',
     },
     avatar: {
         url: {
             type: String,
+            default: '',
         },
         public_id: {
             type: String,
+            default: '',
         },
     },
     role: {

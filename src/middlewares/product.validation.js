@@ -8,7 +8,7 @@ exports.isValidNameProductLength = [
     },
 ]
 
-exports.isValidPriceProduct = [
+exports.isValidPriceProduct = [ 
     check('price').isInt().withMessage('Price product is required'),
     (req, res, next) => {
         next()

@@ -1,9 +1,9 @@
 const ROLES = {
-    OWNER: 'owner',
-    ADMIN: 'admin',
-    MOD: 'mod',
-    WAREHOUSE: 'warehouse',
-    USER: 'user',
+    OWNER: { name: 'owner', value: 444 },
+    MOD: { name: 'mod', value: 400 },
+    ADMIN: { name: 'admin', value: 333 },
+    WAREHOUSE: { name: 'warehouse', value: 222 },
+    USER: { name: 'user', value: 111 },
 }
 const STATUS_ORDER = {
     UNPAID: 'unpaid',

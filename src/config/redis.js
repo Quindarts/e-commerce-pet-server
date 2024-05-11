@@ -13,8 +13,4 @@ const handleEventRedisStatus = (status) => {
 handleEventRedisStatus('connect')
 handleEventRedisStatus('error')
 
-// const getDataInRedisCache = async (name_data, dataType) => {
-//     const data = await client.GET(name_data)
-//     console.log('🚀 ~ getDataInRedisCache ~ data:', data)
-// }
 module.exports = client
