@@ -28,7 +28,7 @@ async function getManyProviders(req, res) {
     const offset = req.query.offset
     const listProvider = await Provider.find(null, null, {
         limit: limit,
-        skip: offset,
+        skip: (offset - 1) * limit,
     }).lean()
 
     res.status(HTTP_STATUS.OK).json({
@@ -38,7 +38,7 @@ async function getManyProviders(req, res) {
         list: listProvider,
         params: {
             limit: limit,
-            offset: offset,
+            page: offset,
             totalProvider: await Provider.countDocuments(),
         },
     })
@@ -50,35 +50,60 @@ async function getManyProviders(req, res) {
  * @param {import('express').Response} res
  */
 
-async function getProviderById(req, res) {
-    const { providerId } = req.params
-    const provider = await Provider.findById(providerId).lean()
-
-    res.status(HTTP_STATUS.OK).json({
-        success: true,
-        status: HTTP_STATUS.OK,
-        message: 'Get provider success.',
-        provider: provider,
+function catchError(notification, error, message) {
+    console.log(notification, error)
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+        message: message,
     })
+}
+
+async function getProviderById(req, res) {
+    try {
+        const { providerId } = req.params
+        const provider = await Provider.findById(providerId).lean()
+
+        res.status(HTTP_STATUS.OK).json({
+            success: true,
+            status: HTTP_STATUS.OK,
+            message: 'Get provider success.',
+            provider: provider,
+        })
+    } catch (error) {
+        catchError(
+            '🚀 ~ getProviderById ~ error:',
+            error,
+            'Failed to query provider'
+        )
+    }
 }
 
 // Update provider
 async function updateProviderById(req, res) {
-    const { providerId } = req.params
-    const { name, email, phone } = req.body
-    const updateProvider = await Provider.findOneAndUpdate(
-        { _id: providerId },
-        {
-            name: name,
-            email: email,
-            phone: phone,
-        }
-    ).lean()
-    res.status(HTTP_STATUS.CREATED).json({
-        success: true,
-        status: HTTP_STATUS.CREATED,
-        message: 'Update Provider success.',
-    })
+    try {
+        const { providerId } = req.params
+        const { name, email, phone } = req.body
+        const updateProvider = await Provider.findOneAndUpdate(
+            { _id: providerId },
+            {
+                name: name,
+                email: email,
+                phone: phone,
+            }
+        ).lean()
+        res.status(HTTP_STATUS.CREATED).json({
+            success: true,
+            status: HTTP_STATUS.CREATED,
+            message: 'Update Provider success.',
+        })
+    } catch (error) {
+        catchError(
+            '🚀 ~ updateProviderById ~ error:',
+            error,
+            'Failed to update provider'
+        )
+    }
 }
 
 /**
@@ -87,13 +112,21 @@ async function updateProviderById(req, res) {
  * @param {import('express').Response} res
  */
 async function deleteProviderById(req, res) {
-    const { providerId } = req.params
-    await Provider.deleteOne({ _id: providerId })
-    res.status(HTTP_STATUS.CREATED).json({
-        success: true,
-        status: HTTP_STATUS.CREATED,
-        message: 'Delete prodvider success.',
-    })
+    try {
+        const { providerId } = req.params
+        await Provider.deleteOne({ _id: providerId })
+        res.status(HTTP_STATUS.CREATED).json({
+            success: true,
+            status: HTTP_STATUS.CREATED,
+            message: 'Delete prodvider success.',
+        })
+    } catch (error) {
+        catchError(
+            '🚀 ~ deleteProviderById ~ error:',
+            error,
+            'Failed to delete provider'
+        )
+    }
 }
 
 module.exports = {
