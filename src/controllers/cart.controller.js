@@ -63,7 +63,8 @@ const getCartByUserId = async (req, res) => {
 //[POST] CREATE CART
 const createCart = async (req, res) => {
     try {
-        const { user_id } = req
+        const { user_id } = req.params
+        console.log("🚀 ~ createCart ~ user_id:", user_id)
         const cartOld = await Cart.findById({ _id: user_id }).lean()
 
         if (cartOld) {

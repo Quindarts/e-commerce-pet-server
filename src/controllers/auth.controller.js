@@ -1,10 +1,11 @@
 const createError = require('http-errors')
-const { HTTP_STATUS } = require('../utils/constant')
+const { HTTP_STATUS, ROLES } = require('../utils/constant')
 const helper = require('../helper/index')
 const jwtHelper = require('../helper/jwt.helper')
 const User = require('../models/user.model')
 const RefreshToken = require('../models/refreshToken.model')
-
+const Cart = require('../models/cart.model')
+const ProductLiked = require('../models/productLiked.model')
 //[POST LOGIN ]
 const login = async (req, res) => {
     const { userName, password, remmber } = req.body
@@ -57,17 +58,32 @@ const login = async (req, res) => {
                 { id: user._id, dateCreated: Date.now },
                 remmber ? '24h' : '1h'
             )
+            let returnUser = {
+                id: user._id,
+                firstName: user.first_name,
+                lastName: user.last_name,
+                avatar: user.avatar,
+                email: user.email,
+                isActive: user.isActive,
+            }
+            if (user.role === ROLES.USER.name) {
+                const results = await Promise.all([
+                    Cart.findById(user.id).lean(),
+
+                    ProductLiked.findOne({
+                        user_id: user._id,
+                    }).lean(),
+                ])
+                returnUser['cart'] = results[0].cart_details
+                returnUser['totalItemCart'] = results[0].cart_details.length
+                returnUser['productLiked'] = results[1].products
+                returnUser['totalItemProductLiked'] = results[1].products.length
+            }
             res.status(HTTP_STATUS.OK).json({
                 success: true,
                 status: HTTP_STATUS.OK,
                 message: 'Login Success',
-                user: {
-                    id: user._id,
-                    userName: user.userName,
-
-                    email: user.email,
-                    isActive: user.isActive,
-                },
+                user: returnUser,
                 tokenList: {
                     accessToken: accessToken,
                     refreshToken: refreshToken,
