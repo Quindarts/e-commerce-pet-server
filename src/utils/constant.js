@@ -1,6 +1,6 @@
 const ROLES = {
     OWNER: { name: 'owner', value: 444 },
-    MOD: { name: 'mod', value: 400 },
+    // MOD: { name: 'mod', value: 400 },
     ADMIN: { name: 'admin', value: 333 },
     WAREHOUSE: { name: 'warehouse', value: 222 },
     USER: { name: 'user', value: 111 },

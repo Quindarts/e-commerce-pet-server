@@ -35,6 +35,12 @@ const ROUTE = {
     PRODUCT_QUERY: '/search',
     PRODUCT_QUERY_BY_CATEGORY: '/category/:category_id',
 
+    //Product liked
+    PRODUCT_LIKED: '/productLiked',
+    PRODUCT_LIKED_USER: '/:user_id',
+
+    // PRODUCT_LIKED_DELETE
+
     //AttributeProduct
     ATTRIBUTE_PRODUCT: '/attributeProducts',
     ATTRIBUTE_PRODUCT_BY_ID: '/:attribute_product_id',

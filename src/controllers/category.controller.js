@@ -81,7 +81,6 @@ const getAllChildrenByParrentNode = async (parentNode) => {
         console.log('🚀 ~ getAllChildrenByParrentNode ~ error:', error)
     }
 }
-
 //[GET LIST CATEOGRY BY QUERY] /?query
 const getCategoryByQuery = async (req, res) => {
     const { name, code, offset, limit, sortField, sortType } = Object.assign(
@@ -185,7 +184,6 @@ const getTreeCategoryInRedis = async (req, res) => {
         })
     }
 }
-
 //[GET ALL TREE CATEGORY]
 const getTreeCategory = async () => {
     try {
@@ -270,7 +268,6 @@ const getAllCategory = async (req, res) => {
         })
     }
 }
-
 //[POST]
 const createCategory = async (req, res) => {
     try {
@@ -323,7 +320,6 @@ const createCategory = async (req, res) => {
         })
     }
 }
-
 //[PUT] ACTIVE CATEGORY
 const updateActiveCategory = async (req, res) => {
     const { category_id } = req.params
@@ -422,7 +418,6 @@ const updateCategory = async (req, res) => {
         })
     }
 }
-
 //[DELETE]
 const deleteCategory = async (req, res) => {
     try {

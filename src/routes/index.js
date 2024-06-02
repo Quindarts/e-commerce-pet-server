@@ -10,6 +10,7 @@ const payment = require('./payment.route')
 const order = require('./order.route')
 const upload = require('./upload.route')
 const provider = require('./provider.route')
+const productLiked = require('./productLiked.route')
 
 function router(app) {
     app.use(ROUTE.AUTH, auth)
@@ -23,6 +24,7 @@ function router(app) {
     app.use(ROUTE.ORDER, order)
     app.use('/upload', upload)
     app.use(ROUTE.PROVIDER, provider)
+    app.use(ROUTE.PRODUCT_LIKED, productLiked)
 }
 
 module.exports = router

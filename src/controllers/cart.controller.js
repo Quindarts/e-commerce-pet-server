@@ -247,7 +247,6 @@ const addProductToCart = async (req, res) => {
         let isProductInCart = false
         let init_index
         cart_details.map((item, index) => {
-            console.log(item)
             if (item.product_id == product_id) {
                 new_quantity += item.quantity
                 isProductInCart = true
