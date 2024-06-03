@@ -146,7 +146,6 @@ const getRootCategory = async (req, res) => {
             })
         }
     } catch (error) {
-        console.log('🚀 ~ getRootCategory ~ error:', error)
 
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,

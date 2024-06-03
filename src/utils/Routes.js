@@ -59,10 +59,14 @@ const ROUTE = {
     // CART_UPDATE_BY_PRODUCT_ID: '/:user_id/product/:product_id',
 
     //Order
-    ORDER: '/orders',
+    ORDER: '/orders',   
     ORDER_BY_ID: '/:order_id',
     ORDER_BY_PARAMS: '/params',
     ORDER_BY_USER_ID: '/user/:user_id',
     ORDER_BY_ID_CREATE_PAYMENT_ONLINE: '/:order_id/payment_online',
+
+    PAYMENT: '/payment',
+    CREATE_PAYMENT: '/create_payment_url',
+    GET_PAYMENT_ONLINE: '/payment-success',
 }
 module.exports = { ROUTE }

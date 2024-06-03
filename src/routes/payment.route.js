@@ -3,13 +3,14 @@ const express = require('express')
 const router = express.Router()
 const {
     createPayment,
-    getPaymentSatus,
+    getPaymentSuccess,
 } = require('../controllers/paymentInfo.controller')
+const { ROUTE } = require('../utils/Routes')
 
 //[POST] CREATE PAYMENT
-router.post('/create_payment_url', createPayment)
+router.post(ROUTE.CREATE_PAYMENT, createPayment)
 
 //[GET] RETURN PAYMENT STATUS
-router.get('/payment_info', getPaymentSatus)
+router.get(ROUTE.GET_PAYMENT_ONLINE, getPaymentSuccess)
 
 module.exports = router

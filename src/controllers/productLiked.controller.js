@@ -113,9 +113,9 @@ const createProductLikedByUserId = async (req, res) => {
         const exitsUser = await ProductLiked.findOne({ user_id: user_id })
 
         if (exitsUser) {
-            return res.status(HTTP_STATUS.NOT_FOUND).json({
+            return res.status(HTTP_STATUS.CONFLICT).json({
                 success: false,
-                status: HTTP_STATUS.NOT_FOUND,
+                status: HTTP_STATUS.CONFLICT,
                 message: 'User already exits',
             })
         }

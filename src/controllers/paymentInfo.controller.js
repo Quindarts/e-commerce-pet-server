@@ -1,10 +1,15 @@
+require('dotenv').config()
 const moment = require('moment')
 const Order = require('../models/order.model')
 const User = require('../models/user.model')
 const Product = require('../models/product.model')
 const Cart = require('../models/cart.model')
-const { HTTP_STATUS, STATUS_ORDER } = require('../utils/constant')
-require('dotenv').config()
+const {
+    HTTP_STATUS,
+    STATUS_ORDER,
+    PAYMENT_METHOD,
+} = require('../utils/constant')
+const redis = require('../config/redis')
 
 //[POST] CREATE PAYMENT
 const createPayment = async (req, res, amount, bankCode, language) => {
@@ -24,7 +29,7 @@ const createPayment = async (req, res, amount, bankCode, language) => {
     let secretKey = `${process.env.VNP_HASH_SECERT}`
     let vnpUrl = `${process.env.VNP_URL}`
     let returnUrl = `${process.env.VNP_RETURN_URL}`
-    let orderId = moment(date).format('DDHHmmss')
+    let order_id = req.params.order_id
     // let amount = req.body.amount
     // let bankCode = req.body.bankCode
 
@@ -39,8 +44,9 @@ const createPayment = async (req, res, amount, bankCode, language) => {
     vnp_Params['vnp_TmnCode'] = 'PY5RFARW'
     vnp_Params['vnp_Locale'] = locale
     vnp_Params['vnp_CurrCode'] = currCode
-    vnp_Params['vnp_TxnRef'] = orderId
-    vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + orderId
+    vnp_Params['vnp_TxnRef'] = order_id
+    // moment(date).format('DDHHmmss')
+    vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + order_id
     vnp_Params['vnp_OrderType'] = 'other'
     vnp_Params['vnp_Amount'] = amount * 100
     vnp_Params['vnp_ReturnUrl'] = returnUrl
@@ -63,18 +69,14 @@ const createPayment = async (req, res, amount, bankCode, language) => {
 
     return vnpUrl
 }
-
 //[GET] RETURN PAYMENT STATUS
 // clear cart => change status order = express -> send order warehouse => select shipper to shipping
-const getPaymentSatus = async (req, res) => {
+const getPaymentSuccess = async (req, res) => {
     let vnp_Params = req.query
     let secureHash = vnp_Params['vnp_SecureHash']
-
     delete vnp_Params['vnp_SecureHash']
     delete vnp_Params['vnp_SecureHashType']
-
     vnp_Params = sortObject(vnp_Params)
-    // let config = require('config')
     let tmnCode = `${process.env.VNP_TMNCODE}`
     let secretKey = `${process.env.VNP_HASH_SECERT}`
     let querystring = require('qs')
@@ -82,8 +84,19 @@ const getPaymentSatus = async (req, res) => {
     let crypto = require('crypto')
     let hmac = crypto.createHmac('sha512', secretKey)
     let signed = hmac.update(new Buffer(signData, 'utf-8')).digest('hex')
+    const order_id = vnp_Params['vnp_TxnRef']
 
     if (secureHash === signed) {
+        const currentOrder = await redis.get(order_id)
+        if (!currentOrder) {
+            res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                message: 'Payment failed, no order provided',
+                code: '97',
+            })
+        }
+        const convertOrder = JSON.parse(currentOrder)
+
         const resultChange = await Order.findOneAndUpdate(
             {
                 _id: order_id,
@@ -100,13 +113,14 @@ const getPaymentSatus = async (req, res) => {
                 new: true,
             }
         )
-        return res.status(HTTP_STATUS.OK).json({
-            success: true,
-            status: HTTP_STATUS.OK,
-            message: 'Payment success',
-            vnp_TmnCode: 'PY5RFARW',
-            code: vnp_Params['vnp_ResponseCode'],
-        })
+        const isDelOrderRedis = await redis.del(order_id)
+
+        if (isDelOrderRedis == 1) {
+            console.log('Key has been deleted')
+        } else {
+            console.log('Key does not exist')
+        }
+        return res.redirect(`${BASE_URL}/payment-success?code=${order_id}`)
     } else {
         res.status(HTTP_STATUS.NOT_FOUND).json({
             success: false,
@@ -135,5 +149,5 @@ function sortObject(obj) {
 }
 module.exports = {
     createPayment,
-    getPaymentSatus,
+    getPaymentSuccess,
 }

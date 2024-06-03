@@ -13,7 +13,7 @@ const {
 const { generateOrderCode } = require('../helper/randomCode')
 const { createPayment } = require('./paymentInfo.controller')
 const _ = require('lodash')
-
+const redis = require('../config/redis')
 //[GET ORDER BY ID ]
 const getOrderById = async (req, res) => {
     const { order_id } = req.params
@@ -130,9 +130,9 @@ const createOrderByCartUser = async (req, res) => {
         } else {
             for (let i = 0; i < cartUser.cart_details.length; i++) {
                 let detail = cartUser.cart_details[i]
-                const product = await Product.findById(
-                    detail['product_id']
-                ).lean()
+                const product = await Product.findById(detail['product_id'])
+                    .select('_id images name code price avaiable dimensions ')
+                    .lean()
 
                 cartDetailsProduct.push({
                     product,
@@ -199,25 +199,6 @@ const handleOrderByPaymentOnline = async (req, res) => {
 
     try {
         const orderPayment = await Order.findById(order_id).lean()
-        console.log(
-            '🚀 ~ handleOrderByPaymentOnline ~ orderPayment:',
-            orderPayment
-        )
-
-        // if (!orderPayment) {
-        //     return res.status(HTTP_STATUS.CONFLICT).json({
-        //         success: false,
-        //         status: HTTP_STATUS.CONFLICT,
-        //         message: 'Change status order failed. No Order found',
-        //     })
-        // }
-        // if (orderPayment.status !== STATUS_ORDER.UNPAID) {
-        //     return res.status(HTTP_STATUS.CONFLICT).json({
-        //         success: false,
-        //         status: HTTP_STATUS.CONFLICT,
-        //         message: 'Order status not found.',
-        //     })
-        // }
         const resultChange = await Order.findOneAndUpdate(
             {
                 _id: order_id,
@@ -235,33 +216,39 @@ const handleOrderByPaymentOnline = async (req, res) => {
             }
         )
         if (resultChange) {
-            const vpnUrl = await createPayment(
-                req,
-                res,
-                amount,
-                bankCode,
-                language
+            const result = await Promise.all([
+                createPayment(req, res, amount, bankCode, language),
+                redis.get(orderPayment._id.toString()),
+            ])
+            const vpnUrl = result[0]
+            if (result[1]) {
+                return res.status(HTTP_STATUS.CONFLICT).json({
+                    success: false,
+                    status: HTTP_STATUS.CONFLICT,
+                    message: 'User is ordering.',
+                })
+            }
+            await redis.setEx(
+                orderPayment._id.toString(),
+                900,
+                JSON.stringify({
+                    orderDetail: orderPayment.orderDetails,
+                    user_id: orderPayment.user_id,
+                    order_id: orderPayment.order_id,
+                    shipping_detail: orderPayment.shipping_detail,
+                    totalOrderItem: orderPayment.totalOrderItem,
+                    countOrderItem: orderPayment.countOrderItem,
+                    coupon: orderPayment.coupon,
+                })
             )
-            console.log('🚀 ~ handleOrderByPaymentOnline ~ vpnUrl:', vpnUrl)
-
-            // if (!vpnUrl) {
             return res.status(HTTP_STATUS.OK).json({
                 success: true,
                 status: HTTP_STATUS.OK,
                 message: 'Go to Payment.',
                 vpnUrl: vpnUrl,
             })
-            // }
-            // return res.status(HTTP_STATUS.OK).json({
-            //     success: false,
-            //     status: HTTP_STATUS.OK,
-            //     message: 'Order need to payment.',
-            //     order: resultChange,
-            // })
-            // vpnUrl: vpnUrl,
         }
     } catch (error) {
-        console.log('🚀 ~ handleOrderByPaymentOnline ~ error:', error)
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
@@ -269,8 +256,6 @@ const handleOrderByPaymentOnline = async (req, res) => {
         })
     }
 }
-
-//
 
 module.exports = {
     createOrderByCartUser,

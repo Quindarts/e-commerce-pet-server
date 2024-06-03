@@ -20,7 +20,7 @@ function router(app) {
     app.use(ROUTE.PRODUCT, product)
     app.use(ROUTE.CART, cart)
     app.use(ROUTE.ATTRIBUTE_PRODUCT, attributeProduct)
-    app.use('/payment', payment)
+    app.use(ROUTE.PAYMENT, payment)
     app.use(ROUTE.ORDER, order)
     app.use('/upload', upload)
     app.use(ROUTE.PROVIDER, provider)
