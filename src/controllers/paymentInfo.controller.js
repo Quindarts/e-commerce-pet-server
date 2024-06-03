@@ -113,6 +113,7 @@ const getPaymentSuccess = async (req, res) => {
                 new: true,
             }
         )
+        console.log('🚀 ~ getPaymentSuccess ~ resultChange:', resultChange)
         const isDelOrderRedis = await redis.del(order_id)
 
         if (isDelOrderRedis == 1) {
@@ -120,7 +121,9 @@ const getPaymentSuccess = async (req, res) => {
         } else {
             console.log('Key does not exist')
         }
-        return res.redirect(`${BASE_URL}/payment-success?code=${order_id}`)
+        return res.redirect(
+            `${process.env.CLIENT_URL}/payment-success?code=${order_id}`
+        )
     } else {
         res.status(HTTP_STATUS.NOT_FOUND).json({
             success: false,
