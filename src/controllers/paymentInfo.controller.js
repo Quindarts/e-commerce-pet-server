@@ -113,7 +113,6 @@ const getPaymentSuccess = async (req, res) => {
                 new: true,
             }
         )
-        console.log('🚀 ~ getPaymentSuccess ~ resultChange:', resultChange)
         const isDelOrderRedis = await redis.del(order_id)
 
         if (isDelOrderRedis == 1) {
