@@ -74,10 +74,16 @@ const login = async (req, res) => {
                         user_id: user._id,
                     }).lean(),
                 ])
-                returnUser['cart'] = results[0].cart_details
-                returnUser['totalItemCart'] = results[0].cart_details.length
-                returnUser['productLiked'] = results[1].products
-                returnUser['totalItemProductLiked'] = results[1].products.length
+                returnUser['cart'] = results[0] ? results[0].cart_details : []
+                returnUser['totalItemCart'] = results[0]
+                    ? results[0].cart_details.length
+                    : []
+                returnUser['productLiked'] = results[1]
+                    ? results[1].products
+                    : []
+                returnUser['totalItemProductLiked'] = results[1]
+                    ? results[1].products.length
+                    : []
             }
             res.status(HTTP_STATUS.OK).json({
                 success: true,
