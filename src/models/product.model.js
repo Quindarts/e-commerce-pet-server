@@ -16,13 +16,22 @@ const productSchema = new mongoose.Schema({
         {
             url: {
                 type: String,
-                required: true,
             },
             public_id: {
                 type: String,
             },
         },
     ],
+    attribute_product: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'AttributeProduct',
+            required: true,
+        },
+    ],
+    total_attribute: {
+        type: Number,
+    },
     price: {
         type: Number,
         required: true,
@@ -42,7 +51,6 @@ const productSchema = new mongoose.Schema({
     brand: {
         type: String,
         lowercase: true,
-        required: true,
         default: 'no brand',
     },
     dimensions: {
@@ -59,11 +67,9 @@ const productSchema = new mongoose.Schema({
     provider: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Provider',
-        required: true,
     },
     isActive: {
         type: Boolean,
-        required: true,
         default: true,
     },
 })

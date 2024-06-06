@@ -4,11 +4,11 @@ const addressSchema = new mongoose.Schema({
     province: {
         provinceId: {
             type: Number,
-            required: true,
+            // required: true,
         },
         provinceName: {
             type: String,
-            required: true,
+            // required: true,
         },
     },
     district: {
@@ -17,34 +17,33 @@ const addressSchema = new mongoose.Schema({
         },
         districtName: {
             type: String,
-            required: true,
+            // required: true,
         },
     },
     ward: {
         wardId: {
-            type: String,
-            upperCase: true,
-            required: true,
+            type: Number,
+            // upperCase: true,
+            // required: true,
         },
         wardName: {
             type: String,
-            required: true,
+            // required: true,
         },
     },
     detail: {
         type: String,
-        required: true,
     },
     zipCode: {
         type: String,
-        upperCase: true,
-        required: true,
-        unique: true,
+        // upperCase: true,
+        // required: true,
+        // unique: true,
     },
     country: {
         type: String,
-        required: true,
+        // required: true,
     },
 })
 
-module.exports = mongoose.Schema('Address', addressSchema)
+module.exports = mongoose.model('Address', addressSchema)

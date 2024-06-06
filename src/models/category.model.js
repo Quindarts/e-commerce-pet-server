@@ -17,8 +17,20 @@ const categorySchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    path: {
+        type: String,
+        default: '',
+    },
+    url: {
+        type: String,
+        default: '',
+    },
     description: {
         type: String,
+    },
+    isActive: {
+        type: Boolean,
+        default: true,
     },
 })
 module.exports = mongoose.model('Category', categorySchema)

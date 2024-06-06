@@ -5,14 +5,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        lowercase: true,
         trim: true,
     },
     password: {
         type: String,
         required: true,
-        unique: true,
-        lowercase: true,
         trim: true,
         minLength: 8,
     },
@@ -22,38 +19,45 @@ const userSchema = new mongoose.Schema({
         unique: true,
         trim: true,
     },
-    name: {
+    first_name: {
         type: String,
-        index: true,
+    },
+    last_name: {
+        type: String,
     },
     phone: {
         type: String,
-        required: true,
-        unique: true,
+        required: false,
+        default: '',
     },
-    address: ['adressSchema'],
+    address: {
+        type: ['adressSchema'],
+        default: null,
+    },
     rewardPoints: {
-        type: number,
+        type: Number,
         default: 0,
     },
     gender: {
         type: String,
-        enum: ['female', 'male'],
-        required: true,
+        enum: ['female', 'male', 'other', 'unknown'],
+        default: 'unknown',
     },
     avatar: {
         url: {
             type: String,
-            required: true,
+            default: '',
         },
         public_id: {
             type: String,
+            default: '',
         },
     },
     role: {
         type: String,
         required: true,
         enum: ['admin', 'owner', 'user', 'warehouse', 'mod'],
+        default: 'user',
     },
     isActive: {
         type: Boolean,
@@ -62,14 +66,13 @@ const userSchema = new mongoose.Schema({
     },
     idFacebook: {
         type: String,
-        unique: true,
     },
     idGoogle: {
         type: String,
-        unique: true,
     },
     dateOfBirth: {
         type: mongoose.Schema.Types.Date,
-        required: true,
+        default: null,
     },
 })
+module.exports = mongoose.model('User', userSchema)
