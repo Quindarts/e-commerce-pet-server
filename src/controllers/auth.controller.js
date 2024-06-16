@@ -6,6 +6,7 @@ const User = require('../models/user.model')
 const RefreshToken = require('../models/refreshToken.model')
 const Cart = require('../models/cart.model')
 const ProductLiked = require('../models/productLiked.model')
+
 //[POST LOGIN ]
 const login = async (req, res) => {
     const { userName, password, remmber } = req.body
@@ -67,14 +68,14 @@ const login = async (req, res) => {
                 isActive: user.isActive,
             }
             if (user.role === ROLES.USER.name) {
+
                 const results = await Promise.all([
                     Cart.findById(user.id).lean(),
-
                     ProductLiked.findOne({
                         user_id: user._id,
                     }).lean(),
                 ])
-                returnUser['cart'] = results[0] ? results[0].cart_details : []
+                returnUser['cart'] = results[0] ? results[0] : []
                 returnUser['totalItemCart'] = results[0]
                     ? results[0].cart_details.length
                     : []
