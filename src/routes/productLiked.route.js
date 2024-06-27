@@ -10,11 +10,8 @@ const { ROUTE } = require('../utils/Routes')
 const router = express.Router()
 
 router.get('/', getAllProductLiked)
-
 router.get(ROUTE.PRODUCT_LIKED_USER, getProductLikedById)
-
 router.post(ROUTE.PRODUCT_LIKED_USER, createProductLikedByUserId)
-
 router.put(ROUTE.PRODUCT_LIKED_USER, updateProductLikedByUserIdAndProductId)
 router.delete(ROUTE.PRODUCT_LIKED_USER, deleteProductLikedByUserIdByProductId)
 

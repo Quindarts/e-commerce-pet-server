@@ -16,6 +16,7 @@ exports.sendWarning = (res, msg) => {
     })
 }
 
+
 exports.sendUnauthenticated = (res) => {
     res.status(HTTP_STATUS.UNAUTHENTICATED).json({
         success: false,

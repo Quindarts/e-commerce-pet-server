@@ -254,6 +254,7 @@ const addProductToCart = async (req, res) => {
                 init_index = index
             }
         })
+        
         var checkedAvaiable = await checkProductItemCartAvaiable(
             new_quantity,
             product_id

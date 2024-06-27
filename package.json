@@ -8,7 +8,8 @@
     },
     "scripts": {
         "start": "nodemon src/index.js",
-        "test": "jest"
+        "test": "jest",
+        "build" : "npm install"
     },
     "jest": {
         "testEnvironment": "node",

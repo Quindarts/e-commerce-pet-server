@@ -2,6 +2,7 @@ const jwtHelper = require('../helper/jwt.helper')
 const User = require('../models/user.model')
 const { HTTP_STATUS, ROLES } = require('../utils/constant')
 const _ = require('lodash')
+
 const isActiveUser = async (req, res, next) => {
     const accessToken =
         req.body.token ||

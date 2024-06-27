@@ -2,8 +2,6 @@ const AttributeProduct = require('../models/attributeProduct.model')
 const { HTTP_STATUS } = require('../utils/constant')
 const helperCode = require('../helper/randomCode')
 
-//[GET ALL BY PRODUCT ID]
-
 //[GET BY ID] GET ATTRIBUTE PRODUCT BY ID /:attribute_product_id
 const getAttributeProductById = async (req, res) => {
     const { attribute_product_id } = req.params
@@ -74,6 +72,7 @@ const getAllAttributeProductByParams = async (req, res) => {
         })
     }
 }
+
 //[POST] CREATE NEW ATTRIBUTE PRODUCT
 const createAttributeProduct = async (req, res) => {
     const { name, value, avaiable, product_id } = req.body
@@ -110,6 +109,7 @@ const createAttributeProduct = async (req, res) => {
         })
     }
 }
+
 //[PUT] UPDATE ATTRIBUTE PRODUCT BY ID /:attribute_product_id
 const updateAttributeProduct = async (req, res) => {
     try {
@@ -127,7 +127,6 @@ const updateAttributeProduct = async (req, res) => {
                 message: 'No attribute product foun.Try again..',
             })
         }
-
         const updateAttributeProduct = await AttributeProduct.findByIdAndUpdate(
             {
                 _id: attribute_product_id,
@@ -155,6 +154,7 @@ const updateAttributeProduct = async (req, res) => {
             message: 'Update Attribute Product success.',
             attributeProduct: updateAttributeProduct,
         })
+
     } catch (error) {
         console.log(
             '🚀 ~ file: AttributeProduct.controller.js:120 ~ updateAttributeProduct ~ error:',
@@ -167,6 +167,7 @@ const updateAttributeProduct = async (req, res) => {
         })
     }
 }
+
 //[DELETE] DELETE ATTRIBUTE PRODUCT BY ID /:attribute_product_id
 const deleteAttributeProduct = async (req, res) => {
     try {
@@ -208,6 +209,7 @@ const deleteAttributeProduct = async (req, res) => {
         })
     }
 }
+
 
 module.exports = {
     createAttributeProduct,

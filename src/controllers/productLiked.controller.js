@@ -116,7 +116,7 @@ const createProductLikedByUserId = async (req, res) => {
             return res.status(HTTP_STATUS.CONFLICT).json({
                 success: false,
                 status: HTTP_STATUS.CONFLICT,
-                message: 'User already exits',
+                message: 'User already exist',
             })
         }
 
@@ -131,7 +131,11 @@ const createProductLikedByUserId = async (req, res) => {
             productLiked: productLiked,
         })
     } catch (error) {
-        console.log('🚀 ~ createProductLikedByUserId ~ error:', error)
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'create new product liked user failed',
+        })
     }
 }
 const updateProductLikedByUserIdAndProductId = async (req, res) => {
@@ -154,7 +158,7 @@ const updateProductLikedByUserIdAndProductId = async (req, res) => {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
                 status: HTTP_STATUS.NOT_FOUND,
-                message: 'Product is already exits',
+                message: 'Product is already exist',
             })
         }
         const newList = await ProductLiked.findOneAndUpdate(
