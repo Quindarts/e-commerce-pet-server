@@ -124,6 +124,7 @@ const register = async (req, res) => {
     const encryptedPassword = helper.encryptedPassword(password)
 
     const newUser = await User.create({
+
         email,
         userName,
         password: encryptedPassword,
@@ -165,6 +166,7 @@ const register = async (req, res) => {
         status: 200,
         message: 'Register Success',
         user: {
+            _id: newUser._id,
             first_name: newUser.first_name,
             last_name: newUser.last_name,
             userName: newUser.userName,

@@ -178,11 +178,15 @@ const updateProductLikedByUserIdAndProductId = async (req, res) => {
         return res.status(HTTP_STATUS.CREATED).json({
             success: true,
             status: HTTP_STATUS.CREATED,
-            message: 'Add new product success',
+            message: 'Add product to wishlist success',
             products: newList,
         })
     } catch (error) {
-        console.log('🚀 ~ getProductLikedById ~ error:', error)
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: true,
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            message: 'Add product failed',
+        })
     }
 }
 

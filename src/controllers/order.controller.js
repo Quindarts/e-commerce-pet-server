@@ -53,8 +53,8 @@ const getOrderByUserId = async (req, res) => {
                 message: 'Get order by user id not found.',
             })
         }
-        res.status(HTTP_STATUS.NOT_FOUND).json({
-            success: false,
+        res.status(HTTP_STATUS.OK).json({
+            success: true,
             status: HTTP_STATUS.OK,
             message: 'Get order by user id success.',
             order,
